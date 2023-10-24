@@ -1,4 +1,4 @@
-package com.thanksd.server;
+package com.thanksd.server.service;
 
 import com.thanksd.server.support.DatabaseCleanerCallback;
 import org.junit.jupiter.api.extension.ExtendWith;
