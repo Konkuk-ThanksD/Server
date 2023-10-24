@@ -2,6 +2,7 @@ package com.thanksd.server.controller;
 
 import com.thanksd.server.dto.request.MemberSignUpRequest;
 import com.thanksd.server.dto.response.MemberSignUpResponse;
+import com.thanksd.server.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
