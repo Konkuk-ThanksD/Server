@@ -1,4 +1,4 @@
-package com.thanksd.server;
+package com.thanksd.server.service;
 
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Platform;
@@ -7,7 +7,6 @@ import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
 import com.thanksd.server.exception.badrequest.DuplicateMemberException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
-import com.thanksd.server.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
