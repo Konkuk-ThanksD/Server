@@ -23,3 +23,17 @@ spring:
       enabled: true
       settings:
         web-allow-others: true
+
+security.jwt.token:
+  secret-key: testtesttesttesttesttesttesttesttestttttest
+  expire-length: 1800000
+
+springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
+    tags-sorter: alpha
