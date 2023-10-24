@@ -1,7 +1,9 @@
 package com.thanksd.server.controller;
 
 import com.thanksd.server.dto.request.MemberSignUpRequest;
+import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
 import com.thanksd.server.dto.response.MemberSignUpResponse;
+import com.thanksd.server.dto.response.OAuthMemberSignUpResponse;
 import com.thanksd.server.dto.response.Response;
 import com.thanksd.server.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +28,13 @@ public class MemberController {
     @PostMapping
     public Response<?> signUp(@RequestBody @Valid MemberSignUpRequest request) {
         MemberSignUpResponse response = memberService.signUp(request);
+        return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "OAuth 회원가입")
+    @PostMapping("/oauth")
+    public Response<Object> signUp(@RequestBody @Valid OAuthMemberSignUpRequest request) {
+        OAuthMemberSignUpResponse response = memberService.signUpByOAuthMember(request);
         return Response.ofSuccess("OK", response);
     }
 }

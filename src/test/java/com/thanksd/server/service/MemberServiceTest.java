@@ -3,7 +3,9 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.MemberSignUpRequest;
+import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
 import com.thanksd.server.exception.badrequest.DuplicateMemberException;
+import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,5 +46,31 @@ public class MemberServiceTest {
 
         assertThatThrownBy(() -> memberService.signUp(request))
                 .isInstanceOf(DuplicateMemberException.class);
+    }
+
+    @Test
+    @DisplayName("OAuth 유저 로그인 후 정보를 입력받아 회원을 가입한다")
+    void signUpByOAuthMember() {
+        String email = "dlawotn3@naver.com";
+        String platformId = "1234321";
+        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, platformId));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, Platform.KAKAO.getValue(),
+                platformId);
+
+        memberService.signUpByOAuthMember(request);
+
+        Member actual = memberRepository.findById(savedMember.getId()).orElseThrow();
+        assertThat(actual.getEmail()).isEqualTo(email);
+    }
+
+    @Test
+    @DisplayName("OAuth 유저 로그인 후 회원가입 시 platform과 platformId 정보로 회원이 존재하지 않으면 예외를 반환한다")
+    void signUpByOAuthMemberWhenInvalidPlatformInfo() {
+        memberRepository.save(new Member("dlawotn3@naver.com", Platform.KAKAO, "1234321"));
+        OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, Platform.KAKAO.getValue(),
+                "invalid");
+
+        assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
+                .isInstanceOf(NotFoundMemberException.class);
     }
 }

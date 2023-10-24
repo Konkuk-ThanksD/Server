@@ -3,14 +3,18 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.MemberSignUpRequest;
+import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
 import com.thanksd.server.dto.response.MemberSignUpResponse;
+import com.thanksd.server.dto.response.OAuthMemberSignUpResponse;
 import com.thanksd.server.exception.badrequest.DuplicateMemberException;
 import com.thanksd.server.exception.badrequest.InvalidPasswordException;
+import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.regex.Pattern;
 
@@ -46,5 +50,15 @@ public class MemberService {
         if (!PASSWORD_REGEX.matcher(password).matches()) {
             throw new InvalidPasswordException();
         }
+    }
+
+    @Transactional
+    public OAuthMemberSignUpResponse signUpByOAuthMember(OAuthMemberSignUpRequest request) {
+        Platform platform = Platform.from(request.getPlatform());
+        Member member = memberRepository.findByPlatformAndPlatformId(platform, request.getPlatformId())
+                .orElseThrow(NotFoundMemberException::new);
+
+        member.registerOAuthMember(request.getEmail());
+        return new OAuthMemberSignUpResponse(member.getId());
     }
 }
