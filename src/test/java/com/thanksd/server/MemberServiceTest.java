@@ -42,7 +42,7 @@ public class MemberServiceTest {
     @Test
     @DisplayName("이미 가입된 이메일이 존재하면 회원 가입 시에 예외를 반환한다")
     void signUpByDuplicateEmailMember() {
-        String email = "kth990303@naver.com";
+        String email = "dlawotn3@naver.com";
         memberRepository.save(new Member(email, Platform.THANKSD, "1111"));
         MemberSignUpRequest request = new MemberSignUpRequest(email, "a1b2c3d4");
 
