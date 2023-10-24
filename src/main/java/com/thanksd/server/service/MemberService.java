@@ -5,7 +5,6 @@ import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.MemberSignUpRequest;
 import com.thanksd.server.dto.response.MemberSignUpResponse;
 import com.thanksd.server.exception.badrequest.DuplicateMemberException;
-import com.thanksd.server.exception.badrequest.InvalidEmailException;
 import com.thanksd.server.exception.badrequest.InvalidPasswordException;
 import com.thanksd.server.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
