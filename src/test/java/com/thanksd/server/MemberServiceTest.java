@@ -9,7 +9,6 @@ import com.thanksd.server.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -23,8 +22,6 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private MemberService memberService;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Test
     @DisplayName("회원을 정상적으로 가입한다")
