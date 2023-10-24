@@ -62,7 +62,7 @@ public class Member extends BaseTime {
         this.platformId = platformId;
     }
 
-    public void registerOAuthMember(String email, String nickname) {
+    public void registerOAuthMember(String email) {
         if (email != null) {
             this.email = email;
         }

@@ -7,6 +7,6 @@ public class InvalidTokenException extends UnauthorizedException {
     }
 
     public InvalidTokenException(String message) {
-        super(message, 1005);
+        super(message, 1010);
     }
 }
