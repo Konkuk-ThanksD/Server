@@ -78,7 +78,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(ThanksdException.class)
-    public ResponseEntity<ErrorResponse> handleMocacongException(ThanksdException e) {
+    public ResponseEntity<ErrorResponse> handleThanksdException(ThanksdException e) {
         return ResponseEntity.status(e.getHttpStatus()).body(new ErrorResponse(e.getCode(), e.getMessage()));
     }
 
