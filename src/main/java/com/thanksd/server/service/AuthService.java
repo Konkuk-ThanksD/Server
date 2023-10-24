@@ -3,6 +3,7 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.AuthLoginRequest;
+import com.thanksd.server.dto.request.GoogleLoginRequest;
 import com.thanksd.server.dto.request.KakaoLoginRequest;
 import com.thanksd.server.dto.response.OAuthTokenResponse;
 import com.thanksd.server.dto.response.TokenResponse;
@@ -11,6 +12,7 @@ import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
 import com.thanksd.server.security.auth.JwtTokenProvider;
 import com.thanksd.server.security.auth.OAuthPlatformMemberResponse;
+import com.thanksd.server.security.auth.google.*;
 import com.thanksd.server.security.auth.kakao.KakaoOAuthUserProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final KakaoOAuthUserProvider kakaoOAuthUserProvider;
+    private final GoogleOAuthUserProvider googleOAuthUserProvider;
 
     public TokenResponse login(AuthLoginRequest request) {
         Member findMember = memberRepository.findByEmailAndPlatform(request.getEmail(), Platform.THANKSD)
@@ -51,6 +54,16 @@ public class AuthService {
                 Platform.KAKAO,
                 kakaoPlatformMember.getEmail(),
                 kakaoPlatformMember.getPlatformId()
+        );
+    }
+
+    public OAuthTokenResponse googleOAuthLogin(GoogleLoginRequest request) {
+        OAuthPlatformMemberResponse googlePlatformMember =
+                googleOAuthUserProvider.getGooglePlatformMember(request.getToken());
+        return generateOAuthTokenResponse(
+                Platform.GOOGLE,
+                googlePlatformMember.getEmail(),
+                googlePlatformMember.getPlatformId()
         );
     }
 

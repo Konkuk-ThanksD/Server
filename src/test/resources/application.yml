@@ -18,6 +18,16 @@ spring:
       enabled: true
       settings:
         web-allow-others: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_SECRET_KEY}
+            redirect-uri: ${GOOGLE_REDIRECT_URL}
+            scope:
+              - email
 
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttesttesttest
