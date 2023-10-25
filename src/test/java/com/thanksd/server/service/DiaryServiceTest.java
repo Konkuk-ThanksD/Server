@@ -83,11 +83,11 @@ class DiaryServiceTest {
         Long diaryId = diaryService.saveDiary(diaryRequest,member.getId()).getId();
 
         //then
-        List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId());
+        List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
         assertThat(diaries.size()).isEqualTo(1);
 
         diaryService.deleteDiary(diaryId);
-        List<DiaryResponse> deleteDiaries = diaryService.findMemberDiaries(member.getId());
+        List<DiaryResponse> deleteDiaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
         assertThat(deleteDiaries.size()).isEqualTo(0);
     }
 
