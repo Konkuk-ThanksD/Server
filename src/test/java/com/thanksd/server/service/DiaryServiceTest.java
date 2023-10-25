@@ -1,5 +1,6 @@
 package com.thanksd.server.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -9,6 +10,7 @@ import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,6 +56,41 @@ class DiaryServiceTest {
     }
 
     @Test
+    @DisplayName("일기를 수정한다.")
+    public void updateDiary() throws Exception {
+        //given
+        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent","sans","https://s3.~~");
+        DiaryRequest newDiaryRequest = new DiaryRequest("newContent","sans","https://s3.~~");
+
+        //when
+        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId());
+        diaryService.updateDiary(newDiaryRequest,diaryId);
+        //then
+        Diary findDiary = diaryService.findOne(diaryId);
+        assertEquals(newDiaryRequest.getContent(),findDiary.getContent(),"수정된 일기 내용이 같아야 한다.");
+        assertEquals(newDiaryRequest.getFont(),findDiary.getFont(),"수정된 일기 폰트가 같아야 한다.");
+        assertEquals(newDiaryRequest.getImage(),findDiary.getImage(),"수정된 일기 폰트가 같아야 한다.");
+    }
+
+    @Test
+    @DisplayName("일기를 삭제한다.")
+    public void deleteDiary() throws Exception {
+        //given
+        DiaryRequest diaryRequest = new DiaryRequest("content","sans","https://s3.~~");
+
+        //when
+        Long diaryId = diaryService.saveDiary(diaryRequest,member.getId());
+
+        //then
+        List<Diary> diaries = diaryService.findMemberDiaries(member.getId());
+        assertThat(diaries.size()).isEqualTo(1);
+
+        diaryService.deleteDiary(diaryId);
+        List<Diary> deleteDiaries = diaryService.findMemberDiaries(member.getId());
+        assertThat(deleteDiaries.size()).isEqualTo(0);
+    }
+
+    @Test
     @DisplayName("일기 업데이트 시, 존재하지 않는 일기는 업데이트 될 수 없다.")
     public void notFoundDiaryWhenUpdate() throws Exception {
         //given
@@ -66,4 +103,6 @@ class DiaryServiceTest {
         assertThatThrownBy(() -> diaryService.updateDiary(newDiaryRequest, diaryId+1))
                 .isInstanceOf(NotFoundDiaryException.class);
     }
+
+
 }
