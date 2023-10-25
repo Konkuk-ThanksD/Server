@@ -1,18 +1,16 @@
-package com.thanksd.server.dto.request;
+package com.thanksd.server.dto.response.diary;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Getter
 @ToString
-public class DiaryRequest {
-    private String content;
-    private String font;
-    private String image;
-
+public class DiaryAllResponse {
+    private List<DiaryResponse> diaries;
 }
