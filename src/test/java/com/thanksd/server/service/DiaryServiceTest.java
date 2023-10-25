@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
+import com.thanksd.server.dto.response.diary.DiaryResponse;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
@@ -44,7 +45,7 @@ class DiaryServiceTest {
         DiaryRequest diaryRequest = new DiaryRequest("content","sans","https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(diaryRequest,member.getId());
+        Long diaryId = diaryService.saveDiary(diaryRequest,member.getId()).getId();
 
         //then
         Diary findDiary = diaryRepository.findById(diaryId)
@@ -63,13 +64,13 @@ class DiaryServiceTest {
         DiaryRequest newDiaryRequest = new DiaryRequest("newContent","sans","https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId());
+        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId()).getId();
         diaryService.updateDiary(newDiaryRequest,diaryId);
         //then
-        Diary findDiary = diaryService.findOne(diaryId);
-        assertEquals(newDiaryRequest.getContent(),findDiary.getContent(),"수정된 일기 내용이 같아야 한다.");
-        assertEquals(newDiaryRequest.getFont(),findDiary.getFont(),"수정된 일기 폰트가 같아야 한다.");
-        assertEquals(newDiaryRequest.getImage(),findDiary.getImage(),"수정된 일기 폰트가 같아야 한다.");
+        DiaryResponse findDiaryResponse = diaryService.findOne(diaryId);
+        assertEquals(newDiaryRequest.getContent(),findDiaryResponse.getContent(),"수정된 일기 내용이 같아야 한다.");
+        assertEquals(newDiaryRequest.getFont(),findDiaryResponse.getFont(),"수정된 일기 폰트가 같아야 한다.");
+        assertEquals(newDiaryRequest.getImage(),findDiaryResponse.getImage(),"수정된 일기 폰트가 같아야 한다.");
     }
 
     @Test
@@ -79,14 +80,14 @@ class DiaryServiceTest {
         DiaryRequest diaryRequest = new DiaryRequest("content","sans","https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(diaryRequest,member.getId());
+        Long diaryId = diaryService.saveDiary(diaryRequest,member.getId()).getId();
 
         //then
-        List<Diary> diaries = diaryService.findMemberDiaries(member.getId());
+        List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId());
         assertThat(diaries.size()).isEqualTo(1);
 
         diaryService.deleteDiary(diaryId);
-        List<Diary> deleteDiaries = diaryService.findMemberDiaries(member.getId());
+        List<DiaryResponse> deleteDiaries = diaryService.findMemberDiaries(member.getId());
         assertThat(deleteDiaries.size()).isEqualTo(0);
     }
 
@@ -98,7 +99,7 @@ class DiaryServiceTest {
         DiaryRequest newDiaryRequest = new DiaryRequest("newContent","sans","https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId());
+        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId()).getId();
         //then
         assertThatThrownBy(() -> diaryService.updateDiary(newDiaryRequest, diaryId+1))
                 .isInstanceOf(NotFoundDiaryException.class);
