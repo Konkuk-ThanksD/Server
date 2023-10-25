@@ -3,10 +3,14 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
+import com.thanksd.server.dto.response.diary.DiaryAllResponse;
+import com.thanksd.server.dto.response.diary.DiaryIdResponse;
+import com.thanksd.server.dto.response.diary.DiaryResponse;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,24 +25,24 @@ public class DiaryService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Long saveDiary(DiaryRequest diaryRequest,Long memberId) {
+    public DiaryIdResponse saveDiary(DiaryRequest diaryRequest, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundMemberException());
         Diary diary = diaryRepository.save(
                 new Diary(member,diaryRequest.getContent(),diaryRequest.getFont(),diaryRequest.getImage())
         );
 
-        return diary.getId();
+        return new DiaryIdResponse(diary.getId());
     }
 
     @Transactional
-    public void updateDiary(DiaryRequest diaryRequest, Long diaryId) {
+    public DiaryResponse updateDiary(DiaryRequest diaryRequest, Long diaryId) {
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundDiaryException());
         findDiary.setContent(validateData(findDiary.getContent(),diaryRequest.getContent()));
         findDiary.setFont(validateData(findDiary.getFont(),diaryRequest.getFont()));
         findDiary.setImage(validateData(findDiary.getImage(),diaryRequest.getImage()));
-        diaryRepository.save(findDiary);
+        Diary diary = diaryRepository.save(findDiary);
         /*
         diaryRepository.update(
                 diaryId,
@@ -47,6 +51,8 @@ public class DiaryService {
                 validateData(findDiary.getImage(),image)
         );
          //*/
+
+        return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
     }
 
     private String validateData(String oldData, String newData) {
@@ -56,21 +62,34 @@ public class DiaryService {
     }
 
     @Transactional
-    public void deleteDiary(Long diaryId) {
+    public DiaryIdResponse deleteDiary(Long diaryId) {
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundDiaryException());
         diaryRepository.delete(findDiary);
+
+        return new DiaryIdResponse(diaryId);
     }
 
-    public List<Diary> findMemberDiaries(Long memberId){
+    public DiaryAllResponse findMemberDiaries(Long memberId){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundMemberException());
-        return diaryRepository.findAllByMember(member)
+        List<Diary> diaries = diaryRepository.findAllByMember(member)
                 .orElseThrow(() -> new NotFoundDiaryException());
+        return new DiaryAllResponse(getDiaryResponseList(diaries));
     }
 
-    public Diary findOne(Long diaryId) {
-        return diaryRepository.findById(diaryId)
+    private static List<DiaryResponse> getDiaryResponseList(List<Diary> diaries) {
+        List<DiaryResponse> diaryResponseList = new ArrayList<>();
+        for (Diary diary : diaries) {
+            diaryResponseList.add(new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage()));
+        }
+        return diaryResponseList;
+    }
+
+    public DiaryResponse findOne(Long diaryId) {
+        Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundDiaryException());
+
+        return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
     }
 }
