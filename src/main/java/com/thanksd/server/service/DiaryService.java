@@ -62,8 +62,11 @@ public class DiaryService {
         diaryRepository.delete(findDiary);
     }
 
-    public List<Diary> findDiaries(){
-        return diaryRepository.findAll();
+    public List<Diary> findMemberDiaries(Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NotFoundMemberException());
+        return diaryRepository.findAllByMember(member)
+                .orElseThrow(() -> new NotFoundDiaryException());
     }
 
     public Diary findOne(Long diaryId) {
