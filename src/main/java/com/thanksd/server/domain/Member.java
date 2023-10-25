@@ -2,6 +2,7 @@ package com.thanksd.server.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -42,7 +43,7 @@ public class Member extends BaseTime {
     @Column(name = "platform_id")
     private String platformId;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Diary> diaries = new ArrayList<>();
 
     public Member(String email, String password, Platform platform, String platformId) {

@@ -23,6 +23,7 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Transactional
     public DiaryIdResponse saveDiary(DiaryRequest diaryRequest, Long memberId) {
@@ -66,6 +67,7 @@ public class DiaryService {
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundDiaryException());
         diaryRepository.delete(findDiary);
+        memberService.deleteDiary(findDiary.getMember().getId(),diaryId);
 
         return new DiaryIdResponse(diaryId);
     }
@@ -73,8 +75,7 @@ public class DiaryService {
     public DiaryAllResponse findMemberDiaries(Long memberId){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundMemberException());
-        List<Diary> diaries = diaryRepository.findAllByMember(member)
-                .orElseThrow(() -> new NotFoundDiaryException());
+        List<Diary> diaries = member.getDiaries();
         return new DiaryAllResponse(getDiaryResponseList(diaries));
     }
 

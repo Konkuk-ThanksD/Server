@@ -50,7 +50,9 @@ class DiaryServiceTest {
         //then
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NotFoundDiaryException());
+        List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
 
+        assertThat(diaries.size()).isEqualTo(1);
         assertEquals(diaryRequest.getContent(),findDiary.getContent(),"저장된 일기 내용이 같아야 한다.");
         assertEquals(diaryRequest.getFont(),findDiary.getFont(),"저장된 일기 폰트가 같아야 한다.");
         assertEquals(diaryRequest.getImage(),findDiary.getImage(),"저장된 일기 폰트가 같아야 한다.");
