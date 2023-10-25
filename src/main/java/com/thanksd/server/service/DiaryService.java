@@ -78,7 +78,7 @@ public class DiaryService {
         return new DiaryAllResponse(getDiaryResponseList(diaries));
     }
 
-    private static List<DiaryResponse> getDiaryResponseList(List<Diary> diaries) {
+    private List<DiaryResponse> getDiaryResponseList(List<Diary> diaries) {
         List<DiaryResponse> diaryResponseList = new ArrayList<>();
         for (Diary diary : diaries) {
             diaryResponseList.add(new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage()));
