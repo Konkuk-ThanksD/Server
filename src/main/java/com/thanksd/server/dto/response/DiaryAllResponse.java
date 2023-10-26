@@ -1,4 +1,4 @@
-package com.thanksd.server.dto.response.diary;
+package com.thanksd.server.dto.response;
 
 import java.util.List;
 import lombok.AccessLevel;
