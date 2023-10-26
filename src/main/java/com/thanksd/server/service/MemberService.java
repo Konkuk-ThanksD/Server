@@ -1,19 +1,15 @@
 package com.thanksd.server.service;
 
-import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.MemberSignUpRequest;
 import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
 import com.thanksd.server.dto.response.MemberSignUpResponse;
 import com.thanksd.server.dto.response.OAuthMemberSignUpResponse;
-import com.thanksd.server.dto.response.diary.DiaryIdResponse;
 import com.thanksd.server.exception.badrequest.DuplicateMemberException;
 import com.thanksd.server.exception.badrequest.InvalidPasswordException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
-import java.util.Iterator;
-import java.util.List;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -65,25 +61,4 @@ public class MemberService {
         return new OAuthMemberSignUpResponse(member.getId());
     }
 
-    @Transactional
-    public DiaryIdResponse deleteDiary(Long memberId, Long diaryId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException());
-        findDiaryToDelete(diaryId, member);
-
-        return new DiaryIdResponse(diaryId);
-    }
-
-    private static void findDiaryToDelete(Long diaryId, Member member) {
-
-        List<Diary> diaries = member.getDiaries();
-        Iterator<Diary> iterator = diaries.iterator();
-        while (iterator.hasNext()) {
-            Diary diary = iterator.next();
-            if (diary.getId() == diaryId) {
-                iterator.remove();
-                break;
-            }
-        }
-    }
 }
