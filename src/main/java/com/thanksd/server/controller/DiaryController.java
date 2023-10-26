@@ -1,9 +1,9 @@
 package com.thanksd.server.controller;
 
 import com.thanksd.server.dto.request.DiaryRequest;
-import com.thanksd.server.dto.response.diary.DiaryAllResponse;
-import com.thanksd.server.dto.response.diary.DiaryIdResponse;
-import com.thanksd.server.dto.response.diary.DiaryResponse;
+import com.thanksd.server.dto.response.DiaryAllResponse;
+import com.thanksd.server.dto.response.DiaryIdResponse;
+import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.dto.response.Response;
 import com.thanksd.server.service.DiaryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +32,6 @@ public class DiaryController {
     }
 
     @PostMapping("/member/{id}")
-
     public Response<Object> saveDiary(@PathVariable("id") Long memberId,
                                       @RequestBody DiaryRequest diaryRequest) {
         DiaryIdResponse response = diaryService.saveDiary(diaryRequest, memberId);
