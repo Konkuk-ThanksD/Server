@@ -13,5 +13,5 @@ import javax.validation.constraints.NotBlank;
 public class GoogleLoginRequest {
 
     @NotBlank(message = "1005:공백일 수 없습니다.")
-    private String token;
+    private String code;
 }

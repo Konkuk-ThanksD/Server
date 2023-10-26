@@ -59,7 +59,7 @@ public class AuthService {
 
     public OAuthTokenResponse googleOAuthLogin(GoogleLoginRequest request) {
         OAuthPlatformMemberResponse googlePlatformMember =
-                googleOAuthUserProvider.getGooglePlatformMember(request.getToken());
+                googleOAuthUserProvider.getGooglePlatformMember(request.getCode());
         return generateOAuthTokenResponse(
                 Platform.GOOGLE,
                 googlePlatformMember.getEmail(),

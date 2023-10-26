@@ -18,13 +18,13 @@ public class GoogleOAuthUserProvider {
         this.googleInfoClient = googleInfoClient;
     }
 
-    public OAuthPlatformMemberResponse getGooglePlatformMember(String token) {
+    public OAuthPlatformMemberResponse getGooglePlatformMember(String code) {
         try {
             String googleToken = googleAuthClient.getGoogleToken(
-                    createRequest(token)
+                    createRequest(code)
             ).getAccessToken();
             GoogleInfoResponse user = googleInfoClient.getUserInfo(googleToken);
-            return new OAuthPlatformMemberResponse(googleToken, user.getEmail());
+            return new OAuthPlatformMemberResponse(user.getEmail(), user.getEmail());
         } catch (FeignException e) {
             throw new InvalidKakaoTokenException();
         }
