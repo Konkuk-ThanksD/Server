@@ -1,6 +1,6 @@
 package com.thanksd.server.security.auth.google;
 
-import com.thanksd.server.exception.unauthorized.InvalidKakaoTokenException;
+import com.thanksd.server.exception.unauthorized.InvalidGoogleTokenException;
 import com.thanksd.server.security.auth.OAuthPlatformMemberResponse;
 import feign.FeignException;
 import org.springframework.stereotype.Component;
@@ -26,7 +26,7 @@ public class GoogleOAuthUserProvider {
             GoogleInfoResponse user = googleInfoClient.getUserInfo(googleToken);
             return new OAuthPlatformMemberResponse(user.getEmail(), user.getEmail());
         } catch (FeignException e) {
-            throw new InvalidKakaoTokenException();
+            throw new InvalidGoogleTokenException();
         }
     }
 
