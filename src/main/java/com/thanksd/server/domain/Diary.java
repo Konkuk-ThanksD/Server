@@ -45,6 +45,7 @@ public class Diary {
         this.font = font;
         this.image = image;
     }
+
     public Diary(Member member) {
         this(member, null, null, null);
     }
@@ -52,5 +53,9 @@ public class Diary {
     private void setMember(Member member) {
         this.member = member;
         member.getDiaries().add(this);
+    }
+
+    public void disConnectMember(){
+        this.member = null;
     }
 }
