@@ -3,9 +3,9 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
-import com.thanksd.server.dto.response.diary.DiaryAllResponse;
-import com.thanksd.server.dto.response.diary.DiaryIdResponse;
-import com.thanksd.server.dto.response.diary.DiaryResponse;
+import com.thanksd.server.dto.response.DiaryAllResponse;
+import com.thanksd.server.dto.response.DiaryIdResponse;
+import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
@@ -23,14 +23,14 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
 
     @Transactional
     public DiaryIdResponse saveDiary(DiaryRequest diaryRequest, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException());
+                .orElseThrow(NotFoundDiaryException::new);
+
         Diary diary = diaryRepository.save(
-                new Diary(member,diaryRequest.getContent(),diaryRequest.getFont(),diaryRequest.getImage())
+                new Diary(member, diaryRequest.getContent(), diaryRequest.getFont(), diaryRequest.getImage())
         );
 
         return new DiaryIdResponse(diary.getId());
@@ -39,10 +39,10 @@ public class DiaryService {
     @Transactional
     public DiaryResponse updateDiary(DiaryRequest diaryRequest, Long diaryId) {
         Diary findDiary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NotFoundDiaryException());
-        findDiary.setContent(validateData(findDiary.getContent(),diaryRequest.getContent()));
-        findDiary.setFont(validateData(findDiary.getFont(),diaryRequest.getFont()));
-        findDiary.setImage(validateData(findDiary.getImage(),diaryRequest.getImage()));
+                .orElseThrow(NotFoundDiaryException::new);
+        findDiary.setContent(validateData(findDiary.getContent(), diaryRequest.getContent()));
+        findDiary.setFont(validateData(findDiary.getFont(), diaryRequest.getFont()));
+        findDiary.setImage(validateData(findDiary.getImage(), diaryRequest.getImage()));
         Diary diary = diaryRepository.save(findDiary);
         /*
         diaryRepository.update(
@@ -57,24 +57,25 @@ public class DiaryService {
     }
 
     private String validateData(String oldData, String newData) {
-        if(newData == null)
+        if (newData == null) {
             return oldData;
+        }
         return newData;
     }
 
     @Transactional
     public DiaryIdResponse deleteDiary(Long diaryId) {
         Diary findDiary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NotFoundDiaryException());
+                .orElseThrow(NotFoundMemberException::new);
+        findDiary.disConnectMember();
         diaryRepository.delete(findDiary);
-        memberService.deleteDiary(findDiary.getMember().getId(),diaryId);
 
         return new DiaryIdResponse(diaryId);
     }
 
-    public DiaryAllResponse findMemberDiaries(Long memberId){
+    public DiaryAllResponse findMemberDiaries(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NotFoundMemberException());
+                .orElseThrow(NotFoundMemberException::new);
         List<Diary> diaries = member.getDiaries();
         return new DiaryAllResponse(getDiaryResponseList(diaries));
     }
@@ -89,7 +90,7 @@ public class DiaryService {
 
     public DiaryResponse findOne(Long diaryId) {
         Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NotFoundDiaryException());
+                .orElseThrow(NotFoundDiaryException::new);
 
         return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
     }
