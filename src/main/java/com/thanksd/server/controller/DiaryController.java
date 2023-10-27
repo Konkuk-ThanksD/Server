@@ -5,6 +5,7 @@ import com.thanksd.server.dto.response.DiaryAllResponse;
 import com.thanksd.server.dto.response.DiaryIdResponse;
 import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.dto.response.Response;
+import com.thanksd.server.security.auth.LoginUserId;
 import com.thanksd.server.service.DiaryService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +26,14 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
-    @GetMapping("/member/{id}")
-    public Response<Object> findAllDairy(@PathVariable("id") Long memberId){
+    @GetMapping
+    public Response<Object> findAllDairy(@LoginUserId Long memberId){
         DiaryAllResponse response = diaryService.findMemberDiaries(memberId);
         return Response.ofSuccess("OK", response);
     }
 
-    @PostMapping("/member/{id}")
-    public Response<Object> saveDiary(@PathVariable("id") Long memberId,
+    @PostMapping
+    public Response<Object> saveDiary(@LoginUserId Long memberId,
                                       @RequestBody DiaryRequest diaryRequest) {
         DiaryIdResponse response = diaryService.saveDiary(diaryRequest, memberId);
         return Response.ofSuccess("OK", response);
