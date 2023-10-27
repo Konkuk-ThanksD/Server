@@ -1,6 +1,7 @@
 package com.thanksd.server.controller;
 
 import com.thanksd.server.dto.request.AuthLoginRequest;
+import com.thanksd.server.dto.request.GoogleLoginRequest;
 import com.thanksd.server.dto.request.KakaoLoginRequest;
 import com.thanksd.server.dto.response.OAuthTokenResponse;
 import com.thanksd.server.dto.response.Response;
@@ -35,6 +36,13 @@ public class AuthController {
     @PostMapping("/kakao")
     public Response<?> loginKakao(@RequestBody @Valid KakaoLoginRequest request) {
         OAuthTokenResponse response = authService.kakaoOAuthLogin(request);
+        return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "구글 OAuth 로그인")
+    @PostMapping("/google")
+    public Response<?> loginGoogle(@RequestBody @Valid GoogleLoginRequest request) {
+        OAuthTokenResponse response = authService.googleOAuthLogin(request);
         return Response.ofSuccess("OK", response);
     }
 }

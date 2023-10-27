@@ -18,6 +18,16 @@ spring:
       enabled: true
       settings:
         web-allow-others: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: test
+            client-secret: test
+            redirect-uri: test
+            scope:
+              - email
 
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttesttesttest
