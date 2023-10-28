@@ -7,6 +7,7 @@ import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.dto.response.Response;
 import com.thanksd.server.security.auth.LoginUserId;
 import com.thanksd.server.service.DiaryService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,14 @@ public class DiaryController {
 
     private final DiaryService diaryService;
 
+    @Operation(summary = "모든 일기 불러오기")
     @GetMapping
     public Response<Object> findAllDairy(@LoginUserId Long memberId){
         DiaryAllResponse response = diaryService.findMemberDiaries(memberId);
         return Response.ofSuccess("OK", response);
     }
 
+    @Operation(summary = "특정 일기 작성")
     @PostMapping
     public Response<Object> saveDiary(@LoginUserId Long memberId,
                                       @RequestBody DiaryRequest diaryRequest) {
@@ -41,18 +44,21 @@ public class DiaryController {
         return Response.ofSuccess("OK", response);
     }
 
+    @Operation(summary = "특정 일기 조회")
     @GetMapping("/{id}")
     public Response<Object> findDiary(@PathVariable Long id) {
         DiaryResponse response = diaryService.findOne(id);
         return Response.ofSuccess("OK", response);
     }
 
+    @Operation(summary = "특정 일기 수정")
     @PutMapping("/{id}")
     public Response<Object> updateDiary(@PathVariable Long id, @RequestBody DiaryRequest diaryRequest) {
         DiaryResponse response = diaryService.updateDiary(diaryRequest, id);
         return Response.ofSuccess("OK", response);
     }
 
+    @Operation(summary = "특정 일기 삭제")
     @DeleteMapping("/{id}")
     public Response<Object> deleteDiary(@PathVariable Long id) {
         DiaryIdResponse response = diaryService.deleteDiary(id);
