@@ -12,12 +12,10 @@ import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "diary")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Diary {
     @Id
@@ -53,6 +51,12 @@ public class Diary {
     private void setMember(Member member) {
         this.member = member;
         member.getDiaries().add(this);
+    }
+
+    public void update(String content, String font, String image) {
+        this.content = content;
+        this.font = font;
+        this.image = image;
     }
 
     public void disConnectMember(){

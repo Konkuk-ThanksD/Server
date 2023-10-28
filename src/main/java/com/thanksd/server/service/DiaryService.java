@@ -40,18 +40,12 @@ public class DiaryService {
     public DiaryResponse updateDiary(DiaryRequest diaryRequest, Long diaryId) {
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
-        findDiary.setContent(validateData(findDiary.getContent(), diaryRequest.getContent()));
-        findDiary.setFont(validateData(findDiary.getFont(), diaryRequest.getFont()));
-        findDiary.setImage(validateData(findDiary.getImage(), diaryRequest.getImage()));
-        Diary diary = diaryRepository.save(findDiary);
-        /*
-        diaryRepository.update(
-                diaryId,
-                validateData(findDiary.getContent(),content),
-                validateData(findDiary.getFont(),font),
-                validateData(findDiary.getImage(),image)
+        findDiary.update(
+                validateData(findDiary.getContent(), diaryRequest.getContent()),
+                validateData(findDiary.getFont(), diaryRequest.getFont()),
+                validateData(findDiary.getImage(), diaryRequest.getImage())
         );
-         //*/
+        Diary diary = diaryRepository.save(findDiary);
 
         return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
     }

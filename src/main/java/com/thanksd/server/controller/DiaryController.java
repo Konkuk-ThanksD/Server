@@ -7,6 +7,7 @@ import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.dto.response.Response;
 import com.thanksd.server.security.auth.LoginUserId;
 import com.thanksd.server.service.DiaryService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Diaries", description = "일기")
 @RestController
 @RequiredArgsConstructor
+@SecurityRequirement(name = "JWT")
 @RequestMapping("/diaries")
 public class DiaryController {
 
