@@ -115,11 +115,15 @@ public class DiaryService {
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime end = start.plusMonths(1);
 
-        List<Diary> diaries = diaryRepository.findByMemberAndCreatedTimeBetween(member, start, end);
-        List<LocalDate> dateList = diaries.stream()
-                .map(diary -> diary.getCreatedTime().toLocalDate())
-                .collect(Collectors.toList());
+        List<LocalDate> dateList = getDiaryDates(member, start, end);
 
         return new DiaryDateResponse(dateList);
+    }
+
+    private List<LocalDate> getDiaryDates(Member member, LocalDateTime start, LocalDateTime end) {
+        List<Diary> diaries = diaryRepository.findByMemberAndCreatedTimeBetween(member, start, end);
+        return diaries.stream()
+                .map(diary -> diary.getCreatedTime().toLocalDate())
+                .collect(Collectors.toList());
     }
 }
