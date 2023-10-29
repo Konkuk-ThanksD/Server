@@ -37,9 +37,14 @@ public class DiaryService {
     }
 
     @Transactional
-    public DiaryResponse updateDiary(DiaryRequest diaryRequest, Long diaryId) {
+    public DiaryResponse updateDiary(DiaryRequest diaryRequest,Long memberId, Long diaryId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
+        findDiary.validateDiaryOwner(member);
+
         findDiary.update(
                 validateData(findDiary.getContent(), diaryRequest.getContent()),
                 validateData(findDiary.getFont(), diaryRequest.getFont()),
@@ -58,9 +63,14 @@ public class DiaryService {
     }
 
     @Transactional
-    public DiaryIdResponse deleteDiary(Long diaryId) {
+    public DiaryIdResponse deleteDiary(Long memberId, Long diaryId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundMemberException::new);
+        findDiary.validateDiaryOwner(member);
+
         findDiary.disConnectMember();
         diaryRepository.delete(findDiary);
 
@@ -82,9 +92,13 @@ public class DiaryService {
         return diaryResponseList;
     }
 
-    public DiaryResponse findOne(Long diaryId) {
+    public DiaryResponse findOne(Long memberId, Long diaryId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
+        diary.validateDiaryOwner(member);
 
         return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
     }

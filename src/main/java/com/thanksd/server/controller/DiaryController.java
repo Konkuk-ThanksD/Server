@@ -32,7 +32,7 @@ public class DiaryController {
 
     @Operation(summary = "모든 일기 불러오기")
     @GetMapping
-    public Response<Object> findAllDairy(@LoginUserId Long memberId){
+    public Response<Object> findAllDairy(@LoginUserId Long memberId) {
         DiaryAllResponse response = diaryService.findMemberDiaries(memberId);
         return Response.ofSuccess("OK", response);
     }
@@ -47,22 +47,23 @@ public class DiaryController {
 
     @Operation(summary = "특정 일기 조회")
     @GetMapping("/{id}")
-    public Response<Object> findDiary(@PathVariable Long id) {
-        DiaryResponse response = diaryService.findOne(id);
+    public Response<Object> findDiary(@LoginUserId Long memberId, @PathVariable Long id) {
+        DiaryResponse response = diaryService.findOne(memberId, id);
         return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "특정 일기 수정")
     @PutMapping("/{id}")
-    public Response<Object> updateDiary(@PathVariable Long id, @RequestBody DiaryRequest diaryRequest) {
-        DiaryResponse response = diaryService.updateDiary(diaryRequest, id);
+    public Response<Object> updateDiary(@LoginUserId Long memberId, @PathVariable Long id,
+                                        @RequestBody DiaryRequest diaryRequest) {
+        DiaryResponse response = diaryService.updateDiary(diaryRequest, memberId, id);
         return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "특정 일기 삭제")
     @DeleteMapping("/{id}")
-    public Response<Object> deleteDiary(@PathVariable Long id) {
-        DiaryIdResponse response = diaryService.deleteDiary(id);
+    public Response<Object> deleteDiary(@LoginUserId Long memberId, @PathVariable Long id) {
+        DiaryIdResponse response = diaryService.deleteDiary(memberId, id);
         return Response.ofSuccess("OK", response);
     }
 }

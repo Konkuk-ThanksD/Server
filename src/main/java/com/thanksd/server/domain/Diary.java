@@ -1,5 +1,6 @@
 package com.thanksd.server.domain;
 
+import com.thanksd.server.exception.badrequest.MemberMismatchException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -61,5 +62,11 @@ public class Diary {
 
     public void disConnectMember(){
         this.member = null;
+    }
+
+    public void validateDiaryOwner(Member member) {
+        if(this.member.getId()!= member.getId()){
+            throw new MemberMismatchException();
+        }
     }
 }
