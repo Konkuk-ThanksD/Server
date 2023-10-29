@@ -1,6 +1,7 @@
 package com.thanksd.server.service;
 
 import com.thanksd.server.domain.Member;
+import com.thanksd.server.domain.Nation;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.MemberSignUpRequest;
 import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
@@ -41,7 +42,7 @@ public class MemberServiceTest {
     @DisplayName("이미 가입된 이메일이 존재하면 회원 가입 시에 예외를 반환한다")
     void signUpByDuplicateEmailMember() {
         String email = "dlawotn3@naver.com";
-        memberRepository.save(new Member(email, Platform.THANKSD, "1111"));
+        memberRepository.save(new Member(email, Platform.THANKSD, "1111", Nation.KOREA));
         MemberSignUpRequest request = new MemberSignUpRequest(email, "a1b2c3d4");
 
         assertThatThrownBy(() -> memberService.signUp(request))
@@ -53,9 +54,9 @@ public class MemberServiceTest {
     void signUpByOAuthMember() {
         String email = "dlawotn3@naver.com";
         String platformId = "1234321";
-        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, platformId));
+        Member savedMember = memberRepository.save(new Member(email, Platform.KAKAO, platformId, Nation.KOREA));
         OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, Platform.KAKAO.getValue(),
-                platformId);
+                platformId, Nation.KOREA.getValue());
 
         memberService.signUpByOAuthMember(request);
 
@@ -66,9 +67,9 @@ public class MemberServiceTest {
     @Test
     @DisplayName("OAuth 유저 로그인 후 회원가입 시 platform과 platformId 정보로 회원이 존재하지 않으면 예외를 반환한다")
     void signUpByOAuthMemberWhenInvalidPlatformInfo() {
-        memberRepository.save(new Member("dlawotn3@naver.com", Platform.KAKAO, "1234321"));
+        memberRepository.save(new Member("dlawotn3@naver.com", Platform.KAKAO, "1234321", Nation.KOREA));
         OAuthMemberSignUpRequest request = new OAuthMemberSignUpRequest(null, Platform.KAKAO.getValue(),
-                "invalid");
+                "invalid", Nation.KOREA.getValue());
 
         assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
                 .isInstanceOf(NotFoundMemberException.class);

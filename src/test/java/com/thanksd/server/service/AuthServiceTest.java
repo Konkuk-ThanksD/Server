@@ -1,6 +1,7 @@
 package com.thanksd.server.service;
 
 import com.thanksd.server.domain.Member;
+import com.thanksd.server.domain.Nation;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.AuthLoginRequest;
 import com.thanksd.server.dto.request.KakaoLoginRequest;
@@ -42,7 +43,8 @@ public class AuthServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "hihi123";
         String encodedPassword = passwordEncoder.encode(password);
-        Member member = new Member("dlawotn3@naver.com", encodedPassword, Platform.THANKSD, null);
+        Member member = new Member("dlawotn3@naver.com", encodedPassword, Platform.THANKSD, null,
+                Nation.KOREA);
         memberRepository.save(member);
         AuthLoginRequest loginRequest = new AuthLoginRequest(email, password);
 
@@ -57,7 +59,8 @@ public class AuthServiceTest {
         String email = "dlawotn3@naver.com";
         String password = "hihi123";
         String encodedPassword = passwordEncoder.encode(password);
-        Member member = new Member("dlawotn3@naver.com", encodedPassword, Platform.THANKSD, null);
+        Member member = new Member("dlawotn3@naver.com", encodedPassword, Platform.THANKSD, null,
+                Nation.KOREA);
         memberRepository.save(member);
 
         AuthLoginRequest loginRequest = new AuthLoginRequest(email, "wrongPassword");
@@ -89,7 +92,7 @@ public class AuthServiceTest {
     void loginKakaoOAuthRegisteredAndMocacongMember() {
         String expected = "dlawotn3@kakao.com";
         String platformId = "1234321";
-        Member member = new Member(expected, Platform.KAKAO, platformId);
+        Member member = new Member(expected, Platform.KAKAO, platformId, Nation.KOREA);
         memberRepository.save(member);
         when(kakaoOAuthUserProvider.getKakaoPlatformMember(anyString()))
                 .thenReturn(new OAuthPlatformMemberResponse(platformId, expected));
