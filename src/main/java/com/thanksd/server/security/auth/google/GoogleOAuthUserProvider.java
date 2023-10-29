@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 public class GoogleOAuthUserProvider {
 
     private final GoogleAuthClient googleAuthClient;
-    private final AuthProperties authProperties;
+    private final GoogleAuthProperties googleAuthProperties;
     private final GoogleInfoClient googleInfoClient;
 
-    public GoogleOAuthUserProvider(GoogleAuthClient googleAuthClient, AuthProperties authProperties, GoogleInfoClient googleInfoClient) {
+    public GoogleOAuthUserProvider(GoogleAuthClient googleAuthClient, GoogleAuthProperties googleAuthProperties, GoogleInfoClient googleInfoClient) {
         this.googleAuthClient = googleAuthClient;
-        this.authProperties = authProperties;
+        this.googleAuthProperties = googleAuthProperties;
         this.googleInfoClient = googleInfoClient;
     }
 
@@ -33,9 +33,9 @@ public class GoogleOAuthUserProvider {
     public GoogleTokenRequest createRequest(String code) {
         return GoogleTokenRequest.builder()
                 .code(code)
-                .clientId(authProperties.getClientId())
-                .clientSecret(authProperties.getClientSecret())
-                .redirectUri(authProperties.getRedirectUri())
+                .clientId(googleAuthProperties.getClientId())
+                .clientSecret(googleAuthProperties.getClientSecret())
+                .redirectUri(googleAuthProperties.getRedirectUri())
                 .build();
     }
 }

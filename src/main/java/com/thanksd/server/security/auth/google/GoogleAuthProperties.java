@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Configuration
 @ConfigurationProperties("spring.security.oauth2.client.registration.google")
-public class AuthProperties {
+public class GoogleAuthProperties {
 
     private String clientId;
     private String clientSecret;
