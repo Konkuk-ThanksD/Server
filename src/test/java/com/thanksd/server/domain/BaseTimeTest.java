@@ -20,7 +20,7 @@ class BaseTimeTest {
     @Test
     @DisplayName("멤버를 저장하면 생성 시각이 자동으로 저장된다")
     public void memberCreatedAtNow() {
-        Member member = new Member("dlawotn3@naver.com", Platform.KAKAO, "1111");
+        Member member = new Member("dlawotn3@naver.com", Platform.KAKAO, "1111", Nation.KOREA);
 
         memberRepository.save(member);
 

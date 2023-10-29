@@ -1,6 +1,7 @@
 package com.thanksd.server.service;
 
 import com.thanksd.server.domain.Member;
+import com.thanksd.server.domain.Nation;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.AuthLoginRequest;
 import com.thanksd.server.dto.request.GoogleLoginRequest;
@@ -76,7 +77,7 @@ public class AuthService {
                     return new OAuthTokenResponse(memberId, token, findMember.getEmail(), true, platformId);
                 })
                 .orElseGet(() -> {
-                    Member oauthMember = new Member(email, platform, platformId);
+                    Member oauthMember = new Member(email, platform, platformId, Nation.KOREA);
                     Member savedMember = memberRepository.save(oauthMember);
                     String token = issueToken(savedMember);
                     return new OAuthTokenResponse(savedMember.getId(), token, email, false, platformId);

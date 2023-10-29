@@ -1,6 +1,7 @@
 package com.thanksd.server.service;
 
 import com.thanksd.server.domain.Member;
+import com.thanksd.server.domain.Nation;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.MemberSignUpRequest;
 import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
@@ -54,10 +55,11 @@ public class MemberService {
     @Transactional
     public OAuthMemberSignUpResponse signUpByOAuthMember(OAuthMemberSignUpRequest request) {
         Platform platform = Platform.from(request.getPlatform());
+        Nation nation = Nation.from(request.getNation());
         Member member = memberRepository.findByPlatformAndPlatformId(platform, request.getPlatformId())
                 .orElseThrow(NotFoundMemberException::new);
 
-        member.registerOAuthMember(request.getEmail());
+        member.registerOAuthMember(request.getEmail(), nation);
         return new OAuthMemberSignUpResponse(member.getId());
     }
 
