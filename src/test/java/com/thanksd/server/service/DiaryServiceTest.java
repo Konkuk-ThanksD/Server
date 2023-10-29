@@ -8,6 +8,7 @@ import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.response.DiaryResponse;
+import com.thanksd.server.exception.badrequest.MemberMismatchException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
@@ -19,10 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @ServiceTest
 class DiaryServiceTest {
-    
+
     @Autowired
     private DiaryRepository diaryRepository;
-    
+
     @Autowired
     private DiaryService diaryService;
 
@@ -30,20 +31,24 @@ class DiaryServiceTest {
     private MemberRepository memberRepository;
 
     Member member = null;
+    Member secondMember = null;
+
     @BeforeEach
     void beforeEach() {
-        member = new Member("kyj0703@konkuk.ac.kr","1111");
+        member = new Member("kyj0703@konkuk.ac.kr", "qwer1111");
+        secondMember = new Member("0703kyj@naver.com", "qwer1111");
         memberRepository.save(member);
+        memberRepository.save(secondMember);
     }
 
     @Test
     @DisplayName("일기를 저장한다.")
     public void saveDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content","sans","https://s3.~~");
+        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", "https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(diaryRequest,member.getId()).getId();
+        Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
 
         //then
         Diary findDiary = diaryRepository.findById(diaryId)
@@ -51,43 +56,43 @@ class DiaryServiceTest {
         List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
 
         assertThat(diaries.size()).isEqualTo(1);
-        assertEquals(diaryRequest.getContent(),findDiary.getContent(),"저장된 일기 내용이 같아야 한다.");
-        assertEquals(diaryRequest.getFont(),findDiary.getFont(),"저장된 일기 폰트가 같아야 한다.");
-        assertEquals(diaryRequest.getImage(),findDiary.getImage(),"저장된 일기 폰트가 같아야 한다.");
+        assertEquals(diaryRequest.getContent(), findDiary.getContent(), "저장된 일기 내용이 같아야 한다.");
+        assertEquals(diaryRequest.getFont(), findDiary.getFont(), "저장된 일기 폰트가 같아야 한다.");
+        assertEquals(diaryRequest.getImage(), findDiary.getImage(), "저장된 일기 폰트가 같아야 한다.");
     }
 
     @Test
     @DisplayName("일기를 수정한다.")
     public void updateDiary() {
         //given
-        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent","sans","https://s3.~~");
-        DiaryRequest newDiaryRequest = new DiaryRequest("newContent","sans","https://s3.~~");
+        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans", "https://s3.~~");
+        DiaryRequest newDiaryRequest = new DiaryRequest("newContent", "sans", "https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId()).getId();
-        diaryService.updateDiary(newDiaryRequest,diaryId);
+        Long diaryId = diaryService.saveDiary(oldDiaryRequest, member.getId()).getId();
+        diaryService.updateDiary(newDiaryRequest, member.getId(), diaryId);
 
         //then
-        DiaryResponse findDiaryResponse = diaryService.findOne(diaryId);
-        assertEquals(newDiaryRequest.getContent(),findDiaryResponse.getContent(),"수정된 일기 내용이 같아야 한다.");
-        assertEquals(newDiaryRequest.getFont(),findDiaryResponse.getFont(),"수정된 일기 폰트가 같아야 한다.");
-        assertEquals(newDiaryRequest.getImage(),findDiaryResponse.getImage(),"수정된 일기 폰트가 같아야 한다.");
+        DiaryResponse findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
+        assertEquals(newDiaryRequest.getContent(), findDiaryResponse.getContent(), "수정된 일기 내용이 같아야 한다.");
+        assertEquals(newDiaryRequest.getFont(), findDiaryResponse.getFont(), "수정된 일기 폰트가 같아야 한다.");
+        assertEquals(newDiaryRequest.getImage(), findDiaryResponse.getImage(), "수정된 일기 폰트가 같아야 한다.");
     }
 
     @Test
     @DisplayName("일기를 삭제한다.")
     public void deleteDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content","sans","https://s3.~~");
+        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", "https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(diaryRequest,member.getId()).getId();
+        Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
 
         //then
         List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
         assertThat(diaries.size()).isEqualTo(1);
 
-        diaryService.deleteDiary(diaryId);
+        diaryService.deleteDiary(member.getId(), diaryId);
         List<DiaryResponse> deleteDiaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
         assertThat(deleteDiaries.size()).isEqualTo(0);
     }
@@ -96,14 +101,32 @@ class DiaryServiceTest {
     @DisplayName("일기 업데이트 시, 존재하지 않는 일기는 업데이트 될 수 없다.")
     public void notFoundDiaryWhenUpdate() {
         //given
-        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent","sans","https://s3.~~");
-        DiaryRequest newDiaryRequest = new DiaryRequest("newContent","sans","https://s3.~~");
+        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans", "https://s3.~~");
+        DiaryRequest newDiaryRequest = new DiaryRequest("newContent", "sans", "https://s3.~~");
 
         //when
-        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId()).getId();
+        Long diaryId = diaryService.saveDiary(oldDiaryRequest, member.getId()).getId();
 
         //then
-        assertThatThrownBy(() -> diaryService.updateDiary(newDiaryRequest, diaryId+1))
+        assertThatThrownBy(() -> diaryService.updateDiary(newDiaryRequest, member.getId(), diaryId + 1))
                 .isInstanceOf(NotFoundDiaryException.class);
+    }
+
+    @Test
+    @DisplayName("일기는 작성자만 접근가능하다.")
+    public void accessDiary() {
+        //given
+        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", "https://s3.~~");
+
+        //when
+        Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
+
+        //then
+        assertThatThrownBy(() -> diaryService.findOne(secondMember.getId(), diaryId))
+                .isInstanceOf(MemberMismatchException.class);
+        assertThatThrownBy(() -> diaryService.updateDiary(diaryRequest,secondMember.getId(), diaryId))
+                .isInstanceOf(MemberMismatchException.class);
+        assertThatThrownBy(() -> diaryService.deleteDiary(secondMember.getId(), diaryId))
+                .isInstanceOf(MemberMismatchException.class);
     }
 }
