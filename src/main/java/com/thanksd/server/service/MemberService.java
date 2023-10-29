@@ -10,13 +10,12 @@ import com.thanksd.server.exception.badrequest.DuplicateMemberException;
 import com.thanksd.server.exception.badrequest.InvalidPasswordException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -61,4 +60,5 @@ public class MemberService {
         member.registerOAuthMember(request.getEmail());
         return new OAuthMemberSignUpResponse(member.getId());
     }
+
 }
