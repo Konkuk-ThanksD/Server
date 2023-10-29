@@ -32,6 +32,10 @@ public class Member extends BaseTime {
     @Column(name = "platform_id")
     private String platformId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "nation")
+    private Nation nation;
+
     public Member(String email, String password, Platform platform, String platformId) {
         this.email = email;
         this.password = password;
