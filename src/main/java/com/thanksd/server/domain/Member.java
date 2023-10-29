@@ -36,26 +36,29 @@ public class Member extends BaseTime {
     @Column(name = "nation")
     private Nation nation;
 
-    public Member(String email, String password, Platform platform, String platformId) {
+    public Member(String email, String password, Platform platform, String platformId, Nation nation) {
         this.email = email;
         this.password = password;
         this.platform = platform;
         this.platformId = platformId;
+        this.nation = nation;
     }
 
     public Member(String email, String password) {
-        this(email, password, Platform.THANKSD, null);
+        this(email, password, Platform.THANKSD, null, Nation.KOREA);
     }
 
-    public Member(String email, Platform platform, String platformId) {
+    public Member(String email, Platform platform, String platformId, Nation nation) {
         this.email = email;
         this.platform = platform;
         this.platformId = platformId;
+        this.nation = nation;
     }
 
-    public void registerOAuthMember(String email) {
+    public void registerOAuthMember(String email, Nation nation) {
         if (email != null) {
             this.email = email;
+            this.nation = nation;
         }
     }
 }
