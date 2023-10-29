@@ -2,7 +2,7 @@ package com.thanksd.server.dto.response;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -10,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 public class DiaryDateResponse {
-    private List<Date> dateList;
+    private List<LocalDate> dateList;
 }
