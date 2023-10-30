@@ -3,6 +3,7 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
+import com.thanksd.server.dto.request.DiaryUpdateRequest;
 import com.thanksd.server.dto.response.DiaryAllResponse;
 import com.thanksd.server.dto.response.DiaryIdResponse;
 import com.thanksd.server.dto.response.DiaryResponse;
@@ -25,19 +26,19 @@ public class DiaryService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public DiaryIdResponse saveDiary(DiaryRequest diaryRequest, Long memberId) {
+    public DiaryIdResponse saveDiary(DiaryRequest diaryRequest,String imageUrl, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundDiaryException::new);
 
         Diary diary = diaryRepository.save(
-                new Diary(member, diaryRequest.getContent(), diaryRequest.getFont(), diaryRequest.getImage())
+                new Diary(member, diaryRequest.getContent(), diaryRequest.getFont(), imageUrl)
         );
 
         return new DiaryIdResponse(diary.getId());
     }
 
     @Transactional
-    public DiaryResponse updateDiary(DiaryRequest diaryRequest,Long memberId, Long diaryId) {
+    public DiaryResponse updateDiary(DiaryUpdateRequest diaryUpdateRequest, Long memberId, Long diaryId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -46,9 +47,9 @@ public class DiaryService {
         findDiary.validateDiaryOwner(member);
 
         findDiary.update(
-                validateData(findDiary.getContent(), diaryRequest.getContent()),
-                validateData(findDiary.getFont(), diaryRequest.getFont()),
-                validateData(findDiary.getImage(), diaryRequest.getImage())
+                validateData(findDiary.getContent(), diaryUpdateRequest.getContent()),
+                validateData(findDiary.getFont(), diaryUpdateRequest.getFont()),
+                validateData(findDiary.getImage(), diaryUpdateRequest.getImage())
         );
         Diary diary = diaryRepository.save(findDiary);
 
@@ -56,7 +57,7 @@ public class DiaryService {
     }
 
     private String validateData(String oldData, String newData) {
-        if (newData == null) {
+        if (newData.isBlank()) {
             return oldData;
         }
         return newData;
