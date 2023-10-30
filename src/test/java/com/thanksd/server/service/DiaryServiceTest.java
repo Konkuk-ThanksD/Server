@@ -26,16 +26,13 @@ class DiaryServiceTest {
 
     @Autowired
     private DiaryRepository diaryRepository;
-
     @Autowired
     private DiaryService diaryService;
-
     @Autowired
     private MemberRepository memberRepository;
 
     @MockBean
     private S3Config s3config;
-
     @MockBean
     private PreSignedUrlService preSignedUrlService;
 

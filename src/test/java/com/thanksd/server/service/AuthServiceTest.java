@@ -1,5 +1,13 @@
 package com.thanksd.server.service;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
+import com.thanksd.server.config.S3Config;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.AuthLoginRequest;
@@ -16,13 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 @ServiceTest
 public class AuthServiceTest {
 
@@ -35,6 +36,10 @@ public class AuthServiceTest {
 
     @MockBean
     private KakaoOAuthUserProvider kakaoOAuthUserProvider;
+    @MockBean
+    private S3Config s3config;
+    @MockBean
+    private PreSignedUrlService preSignedUrlService;
 
     @DisplayName("회원 로그인 요청이 옳다면 토큰을 발급한다")
     @Test

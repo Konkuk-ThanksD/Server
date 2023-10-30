@@ -1,5 +1,9 @@
 package com.thanksd.server.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import com.thanksd.server.config.S3Config;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Platform;
 import com.thanksd.server.dto.request.MemberSignUpRequest;
@@ -7,14 +11,11 @@ import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
 import com.thanksd.server.exception.badrequest.DuplicateMemberException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @ServiceTest
 public class MemberServiceTest {
@@ -23,6 +24,11 @@ public class MemberServiceTest {
     private MemberRepository memberRepository;
     @Autowired
     private MemberService memberService;
+
+    @MockBean
+    private S3Config s3config;
+    @MockBean
+    private PreSignedUrlService preSignedUrlService;
 
     @Test
     @DisplayName("회원을 정상적으로 가입한다")
