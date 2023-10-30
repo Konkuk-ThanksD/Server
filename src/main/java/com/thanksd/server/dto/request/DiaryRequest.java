@@ -16,4 +16,6 @@ public class DiaryRequest {
     private String content;
     @NotBlank(message = "2001:일기의 값들은 공백일 수 없습니다.")
     private String font;
+    @NotBlank(message = "2001:일기의 값들은 공백일 수 없습니다.")
+    private String image;
 }

@@ -24,14 +24,15 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
+    private final PreSignedUrlService preSignedUrlService;
 
     @Transactional
-    public DiaryIdResponse saveDiary(DiaryRequest diaryRequest,String imageUrl, Long memberId) {
+    public DiaryIdResponse saveDiary(DiaryRequest diaryRequest, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundDiaryException::new);
 
         Diary diary = diaryRepository.save(
-                new Diary(member, diaryRequest.getContent(), diaryRequest.getFont(), imageUrl)
+                new Diary(member, diaryRequest.getContent(), diaryRequest.getFont(), diaryRequest.getImage())
         );
 
         return new DiaryIdResponse(diary.getId());
@@ -71,6 +72,8 @@ public class DiaryService {
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundMemberException::new);
         findDiary.validateDiaryOwner(member);
+
+        preSignedUrlService.deleteByPath(findDiary.getImage());
 
         findDiary.disConnectMember();
         diaryRepository.delete(findDiary);

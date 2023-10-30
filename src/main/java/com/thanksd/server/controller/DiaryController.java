@@ -47,8 +47,7 @@ public class DiaryController {
     public Response<Object> saveDiary(@LoginUserId Long memberId,
                                       @Valid @RequestBody DiaryRequest diaryRequest) {
 
-        String imageUrl = presignedUrlService.findByPath(prefixImagePath);
-        DiaryIdResponse response = diaryService.saveDiary(diaryRequest,imageUrl, memberId);
+        DiaryIdResponse response = diaryService.saveDiary(diaryRequest, memberId);
         return Response.ofSuccess("OK", response);
     }
 
@@ -70,6 +69,7 @@ public class DiaryController {
     @Operation(summary = "특정 일기 삭제")
     @DeleteMapping("/{id}")
     public Response<Object> deleteDiary(@LoginUserId Long memberId, @PathVariable Long id) {
+
         DiaryIdResponse response = diaryService.deleteDiary(memberId, id);
         return Response.ofSuccess("OK", response);
     }
