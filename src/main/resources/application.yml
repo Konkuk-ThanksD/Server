@@ -34,7 +34,7 @@ spring:
             scope:
               - email
   profiles:
-    include: secret
+    include: s3
 
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttestttttest
@@ -49,3 +49,15 @@ springdoc:
     display-request-duration: true
     operations-sorter: alpha
     tags-sorter: alpha
+
+cloud:
+  aws:
+    s3:
+      bucket: thanksd-image-bucket
+    credentials:
+      instanceProfile: true
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
