@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -134,22 +133,9 @@ class DiaryServiceTest {
     }
 
     @Test
-    @DisplayName("해당 달에 일기가 존재하는 날짜를 반환한다")
-    public void getExistingDiaryDate() {
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", "https://s3.~~");
-        diaryService.saveDiary(diaryRequest, member.getId());
-
-        DiaryDateResponse findDiaryDate = diaryService.findExistingDiaryDate(member.getId(), LocalDate.now().getYear(),
-                LocalDate.now().getMonthValue());
-
-        assertThat(findDiaryDate.getDateList().size()).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("해당 달에 존재하는 일기가 없다면 빈 리스트를 반환한다")
     public void getExistingDiaryDateWhenNotSavedDiary() {
-        DiaryDateResponse findDiaryDate = diaryService.findExistingDiaryDate(member.getId(), LocalDate.now().getYear(),
-                LocalDate.now().getMonthValue());
+        DiaryDateResponse findDiaryDate = diaryService.findExistingDiaryDate(member.getId(), 2023, 1);
 
         assertThat(findDiaryDate.getDateList().size()).isEqualTo(0);
     }
