@@ -33,6 +33,8 @@ spring:
             redirect-uri: test
             scope:
               - email
+  profiles:
+    include: secret
 
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttestttttest
