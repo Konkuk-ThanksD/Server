@@ -66,8 +66,10 @@ public class DiaryController {
 
     @Operation(summary = "이미지 업로드를 위한 presigned url 요청")
     @PostMapping("/presigned")
-    public String preSignedUrl(@LoginUserId Long memberId,@RequestParam("image") String imageName){
-        return presignedUrlService.getPreSignedUrl(prefixImagePath,imageName,memberId);
+    public Response<Object> preSignedUrl(@LoginUserId Long memberId,@RequestParam("image") String imageName){
+
+        PreSignedUrlResponse response = presignedUrlService.getPreSignedUrl(prefixImagePath,imageName,memberId);
+        return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "해당 달에 일기 존재하는 날짜 조회")

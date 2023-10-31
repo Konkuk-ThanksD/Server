@@ -1,10 +1,13 @@
 package com.thanksd.server.service;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.thanksd.server.dto.response.PreSignedUrlResponse;
+import com.thanksd.server.exception.badrequest.InvalidImageNameException;
 import java.util.Date;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +26,27 @@ public class PreSignedUrlService {
     @Value("${cloud.aws.region.static}")
     private String location;
 
-    public String getPreSignedUrl(String prefixImagePath, String imageName, Long memberId) {
+    public PreSignedUrlResponse getPreSignedUrl(String prefixImagePath, String imageName, Long memberId) {
 
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedUrlRequest(
+                prefixImagePath, imageName, memberId);
+
+        return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
+    }
+
+    private String generatePreSignedUrl(GeneratePresignedUrlRequest generatePresignedUrlRequest) {
+        String preSignedUrl = null;
+        try{
+
+            preSignedUrl = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
+        }catch (AmazonServiceException e){
+            throw new InvalidImageNameException();
+        }
+        return preSignedUrl;
+    }
+
+    private GeneratePresignedUrlRequest getGeneratePresignedUrlRequest(String prefixImagePath, String imageName,
+                                                                       Long memberId) {
         savedImageName = uniqueImageName(imageName, memberId);
 
         String savedImagePath = savedImageName;
@@ -33,8 +55,7 @@ public class PreSignedUrlService {
         }
         GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket,
                 savedImagePath);
-
-        return amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
+        return generatePresignedUrlRequest;
     }
 
     private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String imageName) {
@@ -61,9 +82,13 @@ public class PreSignedUrlService {
     }
 
     /**
-     * path 형식 : "https://" + bucket + ".s3." + location + ".amazonaws.com/" + "images" + "/" + imageName + 확장자;
+     * path 형식 : "/" + "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
      */
     public void deleteByPath(String path) {
-        amazonS3Client.deleteObject(bucket,path);
+        try{
+            amazonS3Client.deleteObject(bucket,path);
+        }catch (AmazonServiceException e){
+            throw new InvalidImageNameException();
+        }
     }
 }
