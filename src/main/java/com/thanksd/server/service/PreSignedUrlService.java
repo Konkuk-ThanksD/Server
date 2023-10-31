@@ -82,7 +82,7 @@ public class PreSignedUrlService {
     }
 
     /**
-     * path 형식 : "/" + "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
+     * path 형식 : "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
      */
     public void deleteByPath(String path) {
         try{

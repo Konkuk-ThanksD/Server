@@ -64,7 +64,8 @@ public class Diary extends BaseTime {
         } catch (MalformedURLException e) {
             throw new InvalidImageUrlException();
         }
-        this.image = url.getPath();
+        String path = url.getPath();
+        this.image = path.substring(1,path.length());
     }
 
     public void update(String content, String font, String image) {
