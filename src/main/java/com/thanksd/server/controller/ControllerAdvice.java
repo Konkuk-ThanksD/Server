@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -75,6 +76,14 @@ public class ControllerAdvice {
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(9004, "요청 파일이 올바르지 않습니다. 파일 손상 여부나 요청 형식을 확인해주세요."));
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.warn("Invalid date format! Please provide the date in the format yyyy-MM-dd. ErrMessage={}\n", e.getMessage());
+
+        return ResponseEntity.badRequest()
+                .body(new ErrorResponse(9005, "올바른 날짜 형식으로 입력해주세요."));
     }
 
     @ExceptionHandler(ThanksdException.class)
