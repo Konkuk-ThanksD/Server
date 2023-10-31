@@ -75,10 +75,10 @@ public class DiaryService {
                 .orElseThrow(NotFoundMemberException::new);
 
         Diary findDiary = diaryRepository.findById(diaryId)
-                .orElseThrow(NotFoundMemberException::new);
+                .orElseThrow(NotFoundDiaryException::new);
         findDiary.validateDiaryOwner(member);
 
-//        preSignedUrlService.deleteByPath(findDiary.getImage());
+        preSignedUrlService.deleteByPath(findDiary.getImage());
 
         findDiary.disConnectMember();
         diaryRepository.delete(findDiary);
