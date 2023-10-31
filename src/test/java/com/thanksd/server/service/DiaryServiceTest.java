@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.thanksd.server.config.S3Config;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 @ServiceTest
 class DiaryServiceTest {
@@ -32,11 +30,6 @@ class DiaryServiceTest {
     private DiaryService diaryService;
     @Autowired
     private MemberRepository memberRepository;
-
-    @MockBean
-    private S3Config s3config;
-    @MockBean
-    private PreSignedUrlService preSignedUrlService;
 
     Member member = null;
     Member secondMember = null;

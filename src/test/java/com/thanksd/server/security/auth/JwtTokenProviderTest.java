@@ -4,16 +4,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import com.thanksd.server.config.S3Config;
 import com.thanksd.server.exception.unauthorized.InvalidTokenException;
 import com.thanksd.server.exception.unauthorized.TokenExpiredException;
-import com.thanksd.server.service.PreSignedUrlService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 class JwtTokenProviderTest {
@@ -21,10 +18,6 @@ class JwtTokenProviderTest {
     private JwtTokenProvider jwtTokenProvider;
     private String token;
 
-    @MockBean
-    private S3Config s3config;
-    @MockBean
-    private PreSignedUrlService preSignedUrlService;
     @DisplayName("payload 정보를 통해 유효한 JWT 토큰을 생성한다")
     @Test
     public void createToken() {

@@ -78,7 +78,7 @@ public class DiaryService {
                 .orElseThrow(NotFoundMemberException::new);
         findDiary.validateDiaryOwner(member);
 
-        preSignedUrlService.deleteByPath(findDiary.getImage());
+//        preSignedUrlService.deleteByPath(findDiary.getImage());
 
         findDiary.disConnectMember();
         diaryRepository.delete(findDiary);

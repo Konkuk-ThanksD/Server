@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
-import com.thanksd.server.config.S3Config;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Nation;
 import com.thanksd.server.domain.Platform;
@@ -37,10 +36,6 @@ public class AuthServiceTest {
 
     @MockBean
     private KakaoOAuthUserProvider kakaoOAuthUserProvider;
-    @MockBean
-    private S3Config s3config;
-    @MockBean
-    private PreSignedUrlService preSignedUrlService;
 
     @DisplayName("회원 로그인 요청이 옳다면 토큰을 발급한다")
     @Test
