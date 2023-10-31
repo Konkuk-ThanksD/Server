@@ -2,27 +2,17 @@ package com.thanksd.server.controller;
 
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
-import com.thanksd.server.dto.response.DiaryAllResponse;
-import com.thanksd.server.dto.response.DiaryIdResponse;
-import com.thanksd.server.dto.response.DiaryResponse;
-import com.thanksd.server.dto.response.Response;
+import com.thanksd.server.dto.response.*;
+
 import com.thanksd.server.security.auth.LoginUserId;
 import com.thanksd.server.service.DiaryService;
 import com.thanksd.server.service.PreSignedUrlService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 @Tag(name = "Diaries", description = "일기")
 @RestController
@@ -74,8 +64,19 @@ public class DiaryController {
         return Response.ofSuccess("OK", response);
     }
 
+    @Operation(summary = "이미지 업로드를 위한 presigned url 요청")
     @PostMapping("/presigned")
     public String preSignedUrl(@LoginUserId Long memberId,@RequestParam("image") String imageName){
         return presignedUrlService.getPreSignedUrl(prefixImagePath,imageName,memberId);
+    }
+
+    @Operation(summary = "해당 달에 일기 존재하는 날짜 조회")
+    @GetMapping("/calendar")
+    public Response<Object> findExistingDiaryDate(
+            @LoginUserId Long memberId,
+            @RequestParam("year") final int year,
+            @RequestParam("month") final int month) {
+        DiaryDateResponse response = diaryService.findExistingDiaryDate(memberId, year, month);
+        return Response.ofSuccess("OK", response);
     }
 }

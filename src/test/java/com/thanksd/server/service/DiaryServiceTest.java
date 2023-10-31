@@ -1,5 +1,6 @@
 package com.thanksd.server.service;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,6 +10,7 @@ import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
+import com.thanksd.server.dto.response.DiaryDateResponse;
 import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.exception.badrequest.MemberMismatchException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
@@ -135,5 +137,13 @@ class DiaryServiceTest {
                 .isInstanceOf(MemberMismatchException.class);
         assertThatThrownBy(() -> diaryService.deleteDiary(secondMember.getId(), diaryId))
                 .isInstanceOf(MemberMismatchException.class);
+    }
+
+    @Test
+    @DisplayName("해당 달에 존재하는 일기가 없다면 빈 리스트를 반환한다")
+    public void getExistingDiaryDateWhenNotSavedDiary() {
+        DiaryDateResponse findDiaryDate = diaryService.findExistingDiaryDate(member.getId(), 2023, 1);
+
+        assertThat(findDiaryDate.getDateList().size()).isEqualTo(0);
     }
 }

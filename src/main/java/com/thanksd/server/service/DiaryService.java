@@ -5,17 +5,22 @@ import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
 import com.thanksd.server.dto.response.DiaryAllResponse;
+import com.thanksd.server.dto.response.DiaryDateResponse;
 import com.thanksd.server.dto.response.DiaryIdResponse;
 import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -105,5 +110,24 @@ public class DiaryService {
         diary.validateDiaryOwner(member);
 
         return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
+    }
+
+    public DiaryDateResponse findExistingDiaryDate(Long memberId, int year, int month) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime end = start.plusMonths(1);
+
+        List<LocalDate> dateList = getDiaryDates(member, start, end);
+
+        return new DiaryDateResponse(dateList);
+    }
+
+    private List<LocalDate> getDiaryDates(Member member, LocalDateTime start, LocalDateTime end) {
+        List<Diary> diaries = diaryRepository.findByMemberAndCreatedTimeBetween(member, start, end);
+        return diaries.stream()
+                .map(diary -> diary.getCreatedTime().toLocalDate())
+                .collect(Collectors.toList());
     }
 }
