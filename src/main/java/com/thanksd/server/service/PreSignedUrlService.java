@@ -22,7 +22,6 @@ public class PreSignedUrlService {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-
     @Value("${cloud.aws.region.static}")
     private String location;
 
@@ -35,11 +34,11 @@ public class PreSignedUrlService {
     }
 
     private String generatePreSignedUrl(GeneratePresignedUrlRequest generatePresignedUrlRequest) {
-        String preSignedUrl = null;
-        try{
 
+        String preSignedUrl = null;
+        try {
             preSignedUrl = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest).toString();
-        }catch (AmazonServiceException e){
+        } catch (AmazonServiceException e) {
             throw new InvalidImageNameException();
         }
         return preSignedUrl;
@@ -85,9 +84,9 @@ public class PreSignedUrlService {
      * path 형식 : "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
      */
     public void deleteByPath(String path) {
-        try{
-            amazonS3Client.deleteObject(bucket,path);
-        }catch (AmazonServiceException e){
+        try {
+            amazonS3Client.deleteObject(bucket, path);
+        } catch (AmazonServiceException e) {
             throw new InvalidImageNameException();
         }
     }
