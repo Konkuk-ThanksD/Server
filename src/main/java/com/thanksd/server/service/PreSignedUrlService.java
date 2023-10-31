@@ -60,10 +60,9 @@ public class PreSignedUrlService {
         return memberId + "/" + UUID.randomUUID() + "_" + imageName;
     }
 
-    public String findByPath(String image) {
-        return "https://" + bucket + ".s3." + location + ".amazonaws.com/" + "images" + "/" + image;
-    }
-
+    /**
+     * path 형식 : "https://" + bucket + ".s3." + location + ".amazonaws.com/" + "images" + "/" + imageName + 확장자;
+     */
     public void deleteByPath(String path) {
         amazonS3Client.deleteObject(bucket,path);
     }

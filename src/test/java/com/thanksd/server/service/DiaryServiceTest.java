@@ -33,6 +33,7 @@ class DiaryServiceTest {
 
     Member member = null;
     Member secondMember = null;
+    String imageUrl;
 
     @BeforeEach
     void beforeEach() {
@@ -40,13 +41,14 @@ class DiaryServiceTest {
         secondMember = new Member("0703kyj@naver.com", "qwer1111");
         memberRepository.save(member);
         memberRepository.save(secondMember);
+        imageUrl = "https://thanksd-image-bucket.s3.ap-northeast-2.amazonaws.com/images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg";
     }
 
     @Test
     @DisplayName("일기를 저장한다.")
     public void saveDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans","https://s3.~~");
+        DiaryRequest diaryRequest = new DiaryRequest("content", "sans",imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
@@ -66,8 +68,8 @@ class DiaryServiceTest {
     @DisplayName("일기를 수정한다.")
     public void updateDiary() {
         //given
-        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans","https://s3.~~");
-        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("newContent", "sans", "https://s3.~~");
+        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans",imageUrl);
+        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("newContent", "sans", imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId()).getId();
@@ -84,7 +86,7 @@ class DiaryServiceTest {
     @DisplayName("일기를 삭제한다.")
     public void deleteDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans","https://s3.~~");
+        DiaryRequest diaryRequest = new DiaryRequest("content", "sans",imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(diaryRequest,member.getId()).getId();
@@ -102,8 +104,8 @@ class DiaryServiceTest {
     @DisplayName("일기 업데이트 시, 존재하지 않는 일기는 업데이트 될 수 없다.")
     public void notFoundDiaryWhenUpdate() {
         //given
-        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans","https://s3.~~");
-        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("newContent", "sans", "https://s3.~~");
+        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans",imageUrl);
+        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("newContent", "sans", imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(oldDiaryRequest, member.getId()).getId();
@@ -117,8 +119,8 @@ class DiaryServiceTest {
     @DisplayName("일기는 작성자만 접근가능하다.")
     public void accessDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", "https://s3.~~");
-        DiaryUpdateRequest diaryUpdateRequest = new DiaryUpdateRequest("newContent", "sans", "https://s3.~~");
+        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", imageUrl);
+        DiaryUpdateRequest diaryUpdateRequest = new DiaryUpdateRequest("newContent", "sans", imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
