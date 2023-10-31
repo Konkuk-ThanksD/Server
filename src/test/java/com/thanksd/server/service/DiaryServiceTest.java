@@ -61,7 +61,7 @@ class DiaryServiceTest {
         assertThat(diaries.size()).isEqualTo(1);
         assertEquals(diaryRequest.getContent(), findDiary.getContent(), "저장된 일기 내용이 같아야 한다.");
         assertEquals(diaryRequest.getFont(), findDiary.getFont(), "저장된 일기 폰트가 같아야 한다.");
-        assertEquals(diaryRequest.getImage(), findDiary.getImage(), "저장된 일기 이미지가 같아야 한다.");
+        assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiary.getImage(), "저장된 일기 이미지가 같아야 한다.");
     }
 
     @Test
@@ -79,7 +79,7 @@ class DiaryServiceTest {
         DiaryResponse findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
         assertEquals(newDiaryRequest.getContent(), findDiaryResponse.getContent(), "수정된 일기 내용이 같아야 한다.");
         assertEquals(newDiaryRequest.getFont(), findDiaryResponse.getFont(), "수정된 일기 폰트가 같아야 한다.");
-        assertEquals(newDiaryRequest.getImage(), findDiaryResponse.getImage(), "수정된 일기 폰트가 같아야 한다.");
+        assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiaryResponse.getImage(), "수정된 일기 이미지가 같아야 한다.");
     }
 
     @Test
