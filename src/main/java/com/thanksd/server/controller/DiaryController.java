@@ -60,6 +60,7 @@ public class DiaryController {
     @DeleteMapping("/{id}")
     public Response<Object> deleteDiary(@LoginUserId Long memberId, @PathVariable Long id) {
 
+        presignedUrlService.deleteByPath(id);
         DiaryIdResponse response = diaryService.deleteDiary(memberId, id);
         return Response.ofSuccess("OK", response);
     }

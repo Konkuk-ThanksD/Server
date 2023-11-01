@@ -6,8 +6,11 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.thanksd.server.domain.Diary;
 import com.thanksd.server.dto.response.PreSignedUrlResponse;
 import com.thanksd.server.exception.badrequest.InvalidImageNameException;
+import com.thanksd.server.exception.notfound.NotFoundDiaryException;
+import com.thanksd.server.repository.DiaryRepository;
 import java.util.Date;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PreSignedUrlService {
     private final AmazonS3Client amazonS3Client;
+    private final DiaryRepository diaryRepository;
     private String savedImageName;
 
     @Value("${cloud.aws.s3.bucket}")
@@ -49,7 +53,7 @@ public class PreSignedUrlService {
         savedImageName = uniqueImageName(imageName, memberId);
 
         String savedImagePath = savedImageName;
-        if (!prefixImagePath.equals("")) {
+        if (!prefixImagePath.isBlank()) {
             savedImagePath = prefixImagePath + "/" + savedImageName;
         }
         GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket,
@@ -81,11 +85,14 @@ public class PreSignedUrlService {
     }
 
     /**
-     * path 형식 : "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
+     * image path 형식 : "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
      */
-    public void deleteByPath(String path) {
+    public void deleteByPath(Long id) {
+        Diary findDiary = diaryRepository.findById(id)
+                .orElseThrow(NotFoundDiaryException::new);
+
         try {
-            amazonS3Client.deleteObject(bucket, path);
+            amazonS3Client.deleteObject(bucket, findDiary.getImage());
         } catch (AmazonServiceException e) {
             throw new InvalidImageNameException();
         }
