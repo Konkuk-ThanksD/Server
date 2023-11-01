@@ -1,11 +1,21 @@
 package com.thanksd.server.domain;
 
+import com.thanksd.server.exception.badrequest.InvalidImageUrlException;
 import com.thanksd.server.exception.badrequest.MemberMismatchException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "diary")
@@ -32,10 +42,10 @@ public class Diary extends BaseTime {
 
 
     public Diary(Member member, String content, String font, String image) {
-        setMember(member);
         this.content = content;
         this.font = font;
-        this.image = image;
+        setImage(image);
+        setMember(member);
     }
 
     public Diary(Member member) {
@@ -47,10 +57,21 @@ public class Diary extends BaseTime {
         member.getDiaries().add(this);
     }
 
+    private void setImage(String image) {
+        URL url;
+        try {
+            url = new URL(image);
+        } catch (MalformedURLException e) {
+            throw new InvalidImageUrlException();
+        }
+        String path = url.getPath();
+        this.image = path.substring(1,path.length());
+    }
+
     public void update(String content, String font, String image) {
         this.content = content;
         this.font = font;
-        this.image = image;
+        setImage(image);
     }
 
     public void disConnectMember(){
