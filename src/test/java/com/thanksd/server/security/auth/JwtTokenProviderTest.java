@@ -1,5 +1,9 @@
 package com.thanksd.server.security.auth;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import com.thanksd.server.exception.unauthorized.InvalidTokenException;
 import com.thanksd.server.exception.unauthorized.TokenExpiredException;
 import org.junit.jupiter.api.Assertions;
@@ -7,8 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 @SpringBootTest
 class JwtTokenProviderTest {
