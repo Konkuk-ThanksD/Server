@@ -9,6 +9,7 @@ import com.thanksd.server.dto.response.DiaryAllResponse;
 import com.thanksd.server.dto.response.DiaryDateResponse;
 import com.thanksd.server.dto.response.DiaryIdResponse;
 import com.thanksd.server.dto.response.DiaryResponse;
+import com.thanksd.server.exception.badrequest.InvalidDateException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
@@ -117,12 +118,19 @@ public class DiaryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
+        validateYearAndMonth(year, month);
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime end = start.plusMonths(1);
 
         List<LocalDate> dateList = getDiaryDates(member, start, end);
 
         return new DiaryDateResponse(dateList);
+    }
+
+    public void validateYearAndMonth(int year, int month) {
+        if ((year < 1900 || year > 2100) || (month < 1 || month > 12)) {
+            throw new InvalidDateException();
+        }
     }
 
     private List<LocalDate> getDiaryDates(Member member, LocalDateTime start, LocalDateTime end) {

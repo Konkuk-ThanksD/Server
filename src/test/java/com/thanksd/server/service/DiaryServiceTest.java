@@ -1,10 +1,6 @@
 package com.thanksd.server.service;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
@@ -12,17 +8,23 @@ import com.thanksd.server.dto.request.DiaryUpdateRequest;
 import com.thanksd.server.dto.response.DiaryDateResponse;
 import com.thanksd.server.dto.response.DiaryInfoListResponse;
 import com.thanksd.server.dto.response.DiaryResponse;
+import com.thanksd.server.exception.badrequest.InvalidDateException;
 import com.thanksd.server.exception.badrequest.MemberMismatchException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ServiceTest
 class DiaryServiceTest {
@@ -143,6 +145,20 @@ class DiaryServiceTest {
         DiaryDateResponse findDiaryDate = diaryService.findExistingDiaryDate(member.getId(), 2023, 1);
 
         assertThat(findDiaryDate.getDateList().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 년도에 대해 달력을 조회하려 하면 예외를 반환한다")
+    public void getExistingDiaryDateByWrongYear() {
+        assertThrows(InvalidDateException.class,
+                () -> diaryService.findExistingDiaryDate(member.getId(), 20222, 1));
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 달에 대해 달력을 조회하려 하면 예외를 반환한다")
+    public void getExistingDiaryDateByWrongMonth() {
+        assertThrows(InvalidDateException.class,
+                () -> diaryService.findExistingDiaryDate(member.getId(), 2022, 13));
     }
 
     @Test
