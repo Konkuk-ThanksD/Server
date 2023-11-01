@@ -3,6 +3,7 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
+import com.thanksd.server.dto.response.*;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
 import com.thanksd.server.dto.response.DiaryAllResponse;
 import com.thanksd.server.dto.response.DiaryDateResponse;
@@ -128,6 +129,21 @@ public class DiaryService {
         List<Diary> diaries = diaryRepository.findByMemberAndCreatedTimeBetween(member, start, end);
         return diaries.stream()
                 .map(diary -> diary.getCreatedTime().toLocalDate())
+                .collect(Collectors.toList());
+    }
+
+    public DiaryInfoListResponse findDiaryByDate(Long memberId, LocalDate date) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        List<DiaryInfoResponse> diaryInfoList = getDiaryList(member, date);
+        return new DiaryInfoListResponse(diaryInfoList);
+    }
+
+    private List<DiaryInfoResponse> getDiaryList(Member member, LocalDate date) {
+        List<Diary> diaries = diaryRepository.findDiariesByCreatedTime(member, date);
+        return diaries.stream()
+                .map(diary -> new DiaryInfoResponse(diary.getId(), diary.getImage()))
                 .collect(Collectors.toList());
     }
 }

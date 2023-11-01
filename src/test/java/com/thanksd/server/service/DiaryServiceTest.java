@@ -10,6 +10,7 @@ import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
 import com.thanksd.server.dto.response.DiaryDateResponse;
+import com.thanksd.server.dto.response.DiaryInfoListResponse;
 import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.exception.badrequest.MemberMismatchException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
@@ -20,6 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDate;
 
 @ServiceTest
 class DiaryServiceTest {
@@ -140,5 +143,13 @@ class DiaryServiceTest {
         DiaryDateResponse findDiaryDate = diaryService.findExistingDiaryDate(member.getId(), 2023, 1);
 
         assertThat(findDiaryDate.getDateList().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("해당 날짜에 존재하는 일기가 없다면 빈 리스트를 반환한다")
+    public void findDiaryByDate() {
+        DiaryInfoListResponse findDiaryInfoList = diaryService.findDiaryByDate(member.getId(), LocalDate.ofEpochDay(2023-01-12));
+
+        assertThat(findDiaryInfoList.getDiaryList().size()).isEqualTo(0);
     }
 }

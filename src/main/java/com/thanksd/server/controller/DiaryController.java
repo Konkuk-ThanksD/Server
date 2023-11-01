@@ -11,8 +11,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.time.LocalDate;
 
 @Tag(name = "Diaries", description = "일기")
 @RestController
@@ -79,6 +81,15 @@ public class DiaryController {
             @RequestParam("year") final int year,
             @RequestParam("month") final int month) {
         DiaryDateResponse response = diaryService.findExistingDiaryDate(memberId, year, month);
+        return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "해당 날짜에 존재하는 일기 조회")
+    @GetMapping("/date")
+    public Response<Object> findDiaryByDate(
+            @LoginUserId Long memberId,
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        DiaryInfoListResponse response = diaryService.findDiaryByDate(memberId, date);
         return Response.ofSuccess("OK", response);
     }
 }
