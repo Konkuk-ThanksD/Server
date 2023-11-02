@@ -36,8 +36,7 @@ public class PreSignedUrlService {
 
     public PreSignedUrlResponse getPreSignedUrl(String imageName, Long memberId) {
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedUrlRequest(
-                prefixImagePath, imageName, memberId);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(imageName, memberId);
 
         return new PreSignedUrlResponse(generatePreSignedUrl(generatePresignedUrlRequest));
     }
@@ -53,20 +52,18 @@ public class PreSignedUrlService {
         return preSignedUrl;
     }
 
-    private GeneratePresignedUrlRequest getGeneratePresignedUrlRequest(String prefixImagePath, String imageName,
-                                                                       Long memberId) {
+    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String imageName, Long memberId) {
         savedImageName = uniqueImageName(imageName, memberId);
 
         String savedImagePath = savedImageName;
         if (!prefixImagePath.isBlank()) {
             savedImagePath = prefixImagePath + "/" + savedImageName;
         }
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePreSignedUrlRequest(bucket,
-                savedImagePath);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = getPreSignedUrlRequest(bucket, savedImagePath);
         return generatePresignedUrlRequest;
     }
 
-    private GeneratePresignedUrlRequest getGeneratePreSignedUrlRequest(String bucket, String imageName) {
+    private GeneratePresignedUrlRequest getPreSignedUrlRequest(String bucket, String imageName) {
         GeneratePresignedUrlRequest generatePresignedUrlRequest =
                 new GeneratePresignedUrlRequest(bucket, imageName)
                         .withMethod(HttpMethod.PUT)
