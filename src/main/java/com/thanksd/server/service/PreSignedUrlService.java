@@ -7,10 +7,13 @@ import com.amazonaws.services.s3.Headers;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.thanksd.server.domain.Diary;
+import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.response.PreSignedUrlResponse;
 import com.thanksd.server.exception.badrequest.InvalidImageNameException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
+import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
+import com.thanksd.server.repository.MemberRepository;
 import java.util.Date;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 public class PreSignedUrlService {
     private final AmazonS3Client amazonS3Client;
     private final DiaryRepository diaryRepository;
+    private final MemberRepository memberRepository;
     private String savedImageName;
     private final String prefixImagePath = "images";
 
@@ -88,9 +92,13 @@ public class PreSignedUrlService {
     /**
      * image path 형식 : "images" + "/" + memberId + "/" + UUID + "_" + imageName + 확장자;
      */
-    public void deleteByPath(Long id) {
-        Diary findDiary = diaryRepository.findById(id)
+    public void deleteByPath(Long memberId, Long diaryId) {
+        Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        findDiary.validateDiaryOwner(member);
 
         try {
             amazonS3Client.deleteObject(bucket, findDiary.getImage());

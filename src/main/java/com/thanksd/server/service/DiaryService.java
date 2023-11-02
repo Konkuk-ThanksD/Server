@@ -50,8 +50,8 @@ public class DiaryService {
 
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
-        findDiary.validateDiaryOwner(member);
 
+        findDiary.validateDiaryOwner(member);
         findDiary.update(
                 validateData(findDiary.getContent(), diaryUpdateRequest.getContent()),
                 validateData(findDiary.getFont(), diaryUpdateRequest.getFont()),
@@ -76,8 +76,8 @@ public class DiaryService {
 
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
-        findDiary.validateDiaryOwner(member);
 
+        findDiary.validateDiaryOwner(member);
         findDiary.disConnectMember();
         diaryRepository.delete(findDiary);
 
