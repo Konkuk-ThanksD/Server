@@ -23,13 +23,14 @@ public class PreSignedUrlService {
     private final AmazonS3Client amazonS3Client;
     private final DiaryRepository diaryRepository;
     private String savedImageName;
+    private final String prefixImagePath = "images";
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     @Value("${cloud.aws.region.static}")
     private String location;
 
-    public PreSignedUrlResponse getPreSignedUrl(String prefixImagePath, String imageName, Long memberId) {
+    public PreSignedUrlResponse getPreSignedUrl(String imageName, Long memberId) {
 
         GeneratePresignedUrlRequest generatePresignedUrlRequest = getGeneratePresignedUrlRequest(
                 prefixImagePath, imageName, memberId);

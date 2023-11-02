@@ -23,7 +23,6 @@ public class DiaryController {
 
     private final DiaryService diaryService;
     private final PreSignedUrlService presignedUrlService;
-    private final String prefixImagePath = "images";
 
     @Operation(summary = "모든 일기 불러오기")
     @GetMapping
@@ -69,7 +68,7 @@ public class DiaryController {
     @PostMapping("/presigned")
     public Response<Object> preSignedUrl(@LoginUserId Long memberId,@RequestParam("image") String imageName){
 
-        PreSignedUrlResponse response = presignedUrlService.getPreSignedUrl(prefixImagePath,imageName,memberId);
+        PreSignedUrlResponse response = presignedUrlService.getPreSignedUrl(imageName,memberId);
         return Response.ofSuccess("OK", response);
     }
 
