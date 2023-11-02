@@ -116,6 +116,24 @@ class DiaryServiceTest {
     }
 
     @Test
+    @DisplayName("업데이트 시, 공백값이 들어온 경우 기존 값을 유지한다.")
+    public void notChangeValueWhenBlankRequest() {
+        //given
+        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans",imageUrl);
+        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("", "", "");
+
+        //when
+        Long diaryId = diaryService.saveDiary(oldDiaryRequest,member.getId()).getId();
+        diaryService.updateDiary(newDiaryRequest, member.getId(), diaryId);
+
+        //then
+        DiaryResponse findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
+        assertEquals(oldDiaryRequest.getContent(), findDiaryResponse.getContent(), "기존 일기 내용이 같아야 한다.");
+        assertEquals(oldDiaryRequest.getFont(), findDiaryResponse.getFont(), "기존 일기 폰트가 같아야 한다.");
+        assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiaryResponse.getImage(), "기존 일기 이미지가 같아야 한다.");
+    }
+
+    @Test
     @DisplayName("일기는 작성자만 접근가능하다.")
     public void accessDiary() {
         //given
