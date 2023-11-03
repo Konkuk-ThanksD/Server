@@ -2,12 +2,12 @@ version: 0.0
 os: linux
 files:
   - source:  /
-    destination: /home/ubuntu/Server
+    destination: /home/ubuntu/Server/zip
     overwrite: yes
 file_exists_behavior: OVERWRITE
 
 permissions:
-  - object: /home/ubuntu/Server
+  - object: /
     owner: ubuntu
     group: ubuntu
     pattern: "**"
