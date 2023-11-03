@@ -2,7 +2,7 @@ REPOSITORY=/home/ubuntu/Server
 PROJECT_NAME=server-0.0.1-SNAPSHOT.jar
 
 echo "> Build 파일 복사"
-sudo cp $REPOSITORY/build/libs/*.jar $REPOSITORY/
+sudo cp $REPOSITORY/*.jar $REPOSITORY/
 
 echo "> 현재 구동 중인 애플리케이션 pid 확인"
 CURRENT_PID=$(pgrep -f $PROJECT_NAME)
