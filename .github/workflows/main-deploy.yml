@@ -15,7 +15,6 @@ jobs:
     
     # 작업을 시스템 유형 (ubuntu)
     runs-on: ubuntu-latest
-    
     # Job이 포함하고있는 일련의 업무들(steps) 
     steps:
     # 워크플로가 쓰인 프로젝트의 github 저장소의 $GITHUB_WORKSPACE에 접근할 수 있게 해줌
