@@ -3,12 +3,8 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
-import com.thanksd.server.dto.response.*;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
-import com.thanksd.server.dto.response.DiaryAllResponse;
-import com.thanksd.server.dto.response.DiaryDateResponse;
-import com.thanksd.server.dto.response.DiaryIdResponse;
-import com.thanksd.server.dto.response.DiaryResponse;
+import com.thanksd.server.dto.response.*;
 import com.thanksd.server.exception.badrequest.InvalidDateException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
@@ -18,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -128,7 +125,9 @@ public class DiaryService {
     }
 
     public void validateYearAndMonth(int year, int month) {
-        if ((year < 1900 || year > 2100) || (month < 1 || month > 12)) {
+        try {
+            LocalDateTime.of(year, month, 1, 0, 0);
+        } catch (DateTimeException e) {
             throw new InvalidDateException();
         }
     }
