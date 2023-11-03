@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 REPOSITORY=/home/ubuntu/Server
-APP_NAME=thanksd
+APP_NAME=Server
 
 echo "> 현재 구동중인 애플리케이션 pid 확인"
 CURRENT_PID=$(pgrep -f $APP_NAME)
