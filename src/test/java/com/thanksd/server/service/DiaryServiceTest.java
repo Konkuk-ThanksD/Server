@@ -16,6 +16,8 @@ import com.thanksd.server.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -147,18 +149,12 @@ class DiaryServiceTest {
         assertThat(findDiaryDate.getDateList().size()).isEqualTo(0);
     }
 
-    @Test
-    @DisplayName("유효하지 않은 년도에 대해 달력을 조회하려 하면 예외를 반환한다")
-    public void getExistingDiaryDateByWrongYear() {
+    @ParameterizedTest
+    @DisplayName("유효하지 않은 년도와 달에 대해 달력을 조회하려 하면 예외를 반환한다")
+    @ValueSource(ints = {0, 13, 22222})
+    void getExistingDiaryDateByWrongDate(int wrongDate) {
         assertThrows(InvalidDateException.class,
-                () -> diaryService.findExistingDiaryDate(member.getId(), 20222, 1));
-    }
-
-    @Test
-    @DisplayName("유효하지 않은 달에 대해 달력을 조회하려 하면 예외를 반환한다")
-    public void getExistingDiaryDateByWrongMonth() {
-        assertThrows(InvalidDateException.class,
-                () -> diaryService.findExistingDiaryDate(member.getId(), 2022, 13));
+                () -> diaryService.findExistingDiaryDate(member.getId(), wrongDate, wrongDate));
     }
 
     @Test
