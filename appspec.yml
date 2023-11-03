@@ -1,5 +1,5 @@
 version: 0.0
 os: linux
-files:  
+files: 
 - source:  /
     destination: /home/ubuntu/applications/Server
