@@ -7,6 +7,8 @@ name: build_deploy
 on:
   push:
     branches: [ main ]
+env:
+  PROJECT_NAME: server
 
 # 하나 이상의 실행할 작업(Job)과 그 작업(Job)을 실행할 환경
 jobs:
@@ -44,7 +46,7 @@ jobs:
     # 현재 directory를 현재 경로에 build.zip 이름으로 압축
     # -r 하위경로까지 모두다라는 옵션 
       - name: Compress the result into zip file
-        run: zip -r ./build.zip .
+        run: zip -r ./$PROJECT_NAME.zip .
         shell: bash
     
     # aws 인증서비스
@@ -76,7 +78,7 @@ jobs:
         working-directory: src/main/resources
     
       - name: Upload to S3
-        run: aws s3 cp --region ap-northeast-2 ./build.zip s3://${{ secrets.CD_BUCKET_NAME }}/deploy/${{ secrets.PROJECT_NAME }}.zip
+        run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://${{ secrets.CD_BUCKET_NAME }}/deploy/${{ secrets.PROJECT_NAME }}.zip
         
       - name: Deploy to AWS EC2 from S3
         run: aws deploy create-deployment --application-name thanksd --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name thanksd-deploy --s3-location bucket=${{ secrets.CD_BUCKET_NAME }},bundleType=zip,key=deploy/${{ secrets.PROJECT_NAME }}.zip
