@@ -2,4 +2,19 @@ version: 0.0
 os: linux
 files:
 - source:  /
-    destination: /home/ubuntu/applications/Server
+    destination: /home/ubuntu/Server
+    overwrite: yes
+file_exists_behavior: OVERWRITE
+
+permissions:
+  - object: /home/ubuntu/Server
+    owner: ubuntu
+    group: ubuntu
+    pattern: "**"
+    mode: 755
+    
+hooks:
+  AfterInstall:
+    - location: deploy.sh
+      timeout: 60
+      runas : root
