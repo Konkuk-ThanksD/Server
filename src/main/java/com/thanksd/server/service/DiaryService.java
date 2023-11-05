@@ -3,12 +3,9 @@ package com.thanksd.server.service;
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
-import com.thanksd.server.dto.response.*;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
-import com.thanksd.server.dto.response.DiaryAllResponse;
-import com.thanksd.server.dto.response.DiaryDateResponse;
-import com.thanksd.server.dto.response.DiaryIdResponse;
-import com.thanksd.server.dto.response.DiaryResponse;
+import com.thanksd.server.dto.response.*;
+import com.thanksd.server.exception.badrequest.InvalidDateException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
@@ -17,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -117,12 +115,21 @@ public class DiaryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
+        validateYearAndMonth(year, month);
         LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
         LocalDateTime end = start.plusMonths(1);
 
         List<LocalDate> dateList = getDiaryDates(member, start, end);
 
         return new DiaryDateResponse(dateList);
+    }
+
+    public void validateYearAndMonth(int year, int month) {
+        try {
+            LocalDateTime.of(year, month, 1, 0, 0);
+        } catch (DateTimeException e) {
+            throw new InvalidDateException();
+        }
     }
 
     private List<LocalDate> getDiaryDates(Member member, LocalDateTime start, LocalDateTime end) {
