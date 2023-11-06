@@ -1,7 +1,36 @@
 spring:
+  profiles:
+    group:
+      local: profile1, common
+      dev: profile2, common
+---
+spring:
+  config:
+    activate:
+      on-profile: profile1
   datasource:
     url: jdbc:h2:~/konkuk;MODE=MYSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
     username: sa
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+---
+spring:
+  config:
+    activate:
+      on-profile: profile2
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWD}
+---
+spring:
+  config:
+    activate:
+      on-profile: common
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,11 +47,6 @@ spring:
         core-size: 2
         max-size: 10
         queue-capacity: 20
-  h2:
-    console:
-      enabled: true
-      settings:
-        web-allow-others: true
   security:
     oauth2:
       client:
