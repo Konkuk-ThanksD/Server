@@ -24,8 +24,7 @@ import java.time.LocalDate;
 public class DiaryController {
 
     private final DiaryService diaryService;
-    private final PreSignedUrlService presignedUrlService;
-    private final String prefixImagePath = "images";
+    private final PreSignedUrlService preSignedUrlService;
 
     @Operation(summary = "모든 일기 불러오기")
     @GetMapping
@@ -46,6 +45,7 @@ public class DiaryController {
     @Operation(summary = "특정 일기 조회")
     @GetMapping("/{id}")
     public Response<Object> findDiary(@LoginUserId Long memberId, @PathVariable Long id) {
+
         DiaryResponse response = diaryService.findOne(memberId, id);
         return Response.ofSuccess("OK", response);
     }
@@ -54,6 +54,10 @@ public class DiaryController {
     @PutMapping("/{id}")
     public Response<Object> updateDiary(@LoginUserId Long memberId, @PathVariable Long id,
                                         @RequestBody DiaryUpdateRequest diaryUpdateRequest) {
+
+        if(!(diaryUpdateRequest.getImage().isBlank())){
+            preSignedUrlService.deleteByPath(memberId,id);
+        }
         DiaryResponse response = diaryService.updateDiary(diaryUpdateRequest, memberId, id);
         return Response.ofSuccess("OK", response);
     }
@@ -62,6 +66,7 @@ public class DiaryController {
     @DeleteMapping("/{id}")
     public Response<Object> deleteDiary(@LoginUserId Long memberId, @PathVariable Long id) {
 
+        preSignedUrlService.deleteByPath(memberId,id);
         DiaryIdResponse response = diaryService.deleteDiary(memberId, id);
         return Response.ofSuccess("OK", response);
     }
@@ -70,7 +75,7 @@ public class DiaryController {
     @PostMapping("/presigned")
     public Response<Object> preSignedUrl(@LoginUserId Long memberId,@RequestParam("image") String imageName){
 
-        PreSignedUrlResponse response = presignedUrlService.getPreSignedUrl(prefixImagePath,imageName,memberId);
+        PreSignedUrlResponse response = preSignedUrlService.getPreSignedUrl(imageName,memberId);
         return Response.ofSuccess("OK", response);
     }
 

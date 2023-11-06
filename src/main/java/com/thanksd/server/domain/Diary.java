@@ -71,7 +71,8 @@ public class Diary extends BaseTime {
     public void update(String content, String font, String image) {
         this.content = content;
         this.font = font;
-        setImage(image);
+        if(this.image!= image)
+            setImage(image);
     }
 
     public void disConnectMember(){
