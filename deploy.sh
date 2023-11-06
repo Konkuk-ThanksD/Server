@@ -28,4 +28,4 @@ sudo chmod +x $JAR_NAME
 
 echo "> $JAR_NAME 실행"
 source /etc/profile
-nohup java -jar $JAR_NAME --spring.profiles.active=dev > $REPOSITORY/nohup.out 2>&1 &
+nohup java -jar $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
