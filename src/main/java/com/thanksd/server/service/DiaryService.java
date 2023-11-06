@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -114,8 +115,10 @@ public class DiaryService {
                 .orElseThrow(NotFoundMemberException::new);
 
         validateYearAndMonth(year, month);
-        LocalDateTime start = LocalDateTime.of(year, month, 1, 0, 0);
-        LocalDateTime end = start.plusMonths(1);
+        LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDate = startDate.plusMonths(1);
+        Timestamp start = Timestamp.valueOf(startDate);
+        Timestamp end = Timestamp.valueOf(endDate);
 
         List<LocalDate> dateList = getDiaryDates(member, start, end);
 
@@ -130,22 +133,26 @@ public class DiaryService {
         }
     }
 
-    private List<LocalDate> getDiaryDates(Member member, LocalDateTime start, LocalDateTime end) {
+    private List<LocalDate> getDiaryDates(Member member, Timestamp start, Timestamp end) {
         List<Diary> diaries = diaryRepository.findByMemberAndCreatedTimeBetween(member, start, end);
         return diaries.stream()
-                .map(diary -> diary.getCreatedTime().toLocalDate())
+                .map(diary -> diary.getCreatedTime().toLocalDateTime().toLocalDate())
                 .collect(Collectors.toList());
     }
 
     public DiaryInfoListResponse findDiaryByDate(Long memberId, LocalDate date) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
-
-        List<DiaryInfoResponse> diaryInfoList = getDiaryList(member, date);
+        Timestamp findDate = convertToTimestamp(date);
+        List<DiaryInfoResponse> diaryInfoList = getDiaryList(member, findDate);
         return new DiaryInfoListResponse(diaryInfoList);
     }
 
-    private List<DiaryInfoResponse> getDiaryList(Member member, LocalDate date) {
+    private Timestamp convertToTimestamp(LocalDate date) {
+        return Timestamp.valueOf(date.atStartOfDay());
+    }
+
+    private List<DiaryInfoResponse> getDiaryList(Member member, Timestamp date) {
         List<Diary> diaries = diaryRepository.findDiariesByCreatedTime(member, date);
         return diaries.stream()
                 .map(diary -> new DiaryInfoResponse(diary.getId(), diary.getImage()))

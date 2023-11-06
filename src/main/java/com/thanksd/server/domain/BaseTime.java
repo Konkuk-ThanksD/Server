@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Getter
 @MappedSuperclass
@@ -17,9 +17,9 @@ public class BaseTime {
 
     @CreatedDate
     @Column(name = "created_time", updatable = false)
-    private LocalDateTime createdTime;
+    private Timestamp createdTime;
 
     @LastModifiedDate
     @Column(name = "modified_time")
-    private LocalDateTime modifiedTime;
+    private Timestamp modifiedTime;
 }
