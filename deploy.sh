@@ -1,4 +1,4 @@
-REPOSITORY=/home/ubuntu/Server
+REPOSITORY=/home/ec2-user/Server
 PROJECT_NAME=server-0.0.1-SNAPSHOT.jar
 
 echo "> Build 파일 복사"
