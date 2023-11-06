@@ -31,14 +31,24 @@ jobs:
         with:
           java-version: 11
           distribution: 'temurin'
-
+      - name: Set Yaml
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application.yml
+        env:
+          spring.security.oauth2.client.registration.google.client-id: ${{secrets.GOOGLE_CLIENT_ID}}
+          spring.security.oauth2.client.registration.google.client-secret: ${{secrets.GOOGLE_CLIENT_SECRET}}
+          spring.security.oauth2.client.registration.google.redirect-uri: ${{secrets.GOOGLE_REDIRECT_URI}}
+          cloud.aws.s3.bucket: ${{secrets.BUCKET_NAME}}
+          cloud.aws.credentials.access-key: ${{secrets.S3_ACCESS_KEY}}
+          cloud.aws.credentials.secret-key: ${{secrets.S3_SECRET_KEY}}
     # gradlew 실행권한 주기
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         shell: bash
     
     # 빌드하기
-      - name: Build with Cradle
+      - name: Build with Gradle
         run: ./gradlew build
         shell: bash
     
@@ -57,25 +67,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
-          
-      - name: write S3 BUCKET NAME
-        run: echo "BUCKET_NAME=${{secrets.BUCKET_NAME}}" >> application.yml
-        working-directory: src/main/resources
-      - name: write S3 ACCESS KEY
-        run: echo "S3_ACCESS_KEY=${{secrets.S3_ACCESS_KEY}}" >> application.yml
-        working-directory: src/main/resources
-      - name: write S3 SECRET KEY
-        run: echo "S3_SECRET_KEY=${{secrets.S3_SECRET_KEY}}" >> application.yml
-        working-directory: src/main/resources
-      - name: write GOOGLE_CLIENT_ID
-        run: echo "GOOGLE_CLIENT_ID=${{secrets.GOOGLE_CLIENT_ID}}" >> application.yml
-        working-directory: src/main/resources
-      - name: write GOOGLE_CLIENT_SECRET
-        run: echo "GOOGLE_CLIENT_SECRET=${{secrets.GOOGLE_CLIENT_SECRET}}" >> application.yml
-        working-directory: src/main/resources
-      - name: write GOOGLE_REDIRECT_URI
-        run: echo "GOOGLE_REDIRECT_URI=${{secrets.GOOGLE_REDIRECT_URI}}" >> application.yml
-        working-directory: src/main/resources
     
       - name: Upload to S3
         run: aws s3 cp --region ap-northeast-2 ./$PROJECT_NAME.zip s3://${{ secrets.CD_BUCKET_NAME }}/deploy/${{ secrets.PROJECT_NAME }}.zip
