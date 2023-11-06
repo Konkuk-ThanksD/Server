@@ -39,6 +39,9 @@ jobs:
           spring.security.oauth2.client.registration.google.client-id: ${{secrets.GOOGLE_CLIENT_ID}}
           spring.security.oauth2.client.registration.google.client-secret: ${{secrets.GOOGLE_CLIENT_SECRET}}
           spring.security.oauth2.client.registration.google.redirect-uri: ${{secrets.GOOGLE_REDIRECT_URI}}
+          spring.datasource.url: ${{secrets.DATASOURCE_URL}}
+          spring.datasource.username: ${{secrets.DATASOURCE_ADMIN}}
+          spring.datasource.password: ${{secrets.DATASOURCE_PASSWD}}
           cloud.aws.s3.bucket: ${{secrets.BUCKET_NAME}}
           cloud.aws.credentials.access-key: ${{secrets.S3_ACCESS_KEY}}
           cloud.aws.credentials.secret-key: ${{secrets.S3_SECRET_KEY}}
