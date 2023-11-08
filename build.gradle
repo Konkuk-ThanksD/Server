@@ -32,8 +32,6 @@ dependencies {
 	implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 	implementation platform("org.springframework.cloud:spring-cloud-dependencies:2021.0.5")
-    testImplementation 'org.projectlombok:lombok:1.18.22'
-	testImplementation 'org.projectlombok:lombok:1.18.22'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
