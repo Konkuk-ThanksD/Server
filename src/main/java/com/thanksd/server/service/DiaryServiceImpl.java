@@ -55,8 +55,12 @@ public class DiaryServiceImpl implements DiaryService{
 
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
-
         findDiary.validateDiaryOwner(member);
+
+        if(!(diaryUpdateRequest.getImage().isBlank())){
+            preSignedUrlService.deleteByPath(diaryId);
+        }
+
         findDiary.update(
                 validateData(findDiary.getContent(), diaryUpdateRequest.getContent()),
                 validateData(findDiary.getFont(), diaryUpdateRequest.getFont()),
@@ -83,6 +87,8 @@ public class DiaryServiceImpl implements DiaryService{
                 .orElseThrow(NotFoundDiaryException::new);
 
         findDiary.validateDiaryOwner(member);
+        preSignedUrlService.deleteByPath(diaryId);
+
         findDiary.disConnectMember();
         diaryRepository.delete(findDiary);
 
