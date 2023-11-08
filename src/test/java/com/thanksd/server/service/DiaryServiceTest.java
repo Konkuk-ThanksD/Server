@@ -1,6 +1,11 @@
 package com.thanksd.server.service;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
@@ -13,20 +18,15 @@ import com.thanksd.server.exception.badrequest.MemberMismatchException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 @ServiceTest
 class DiaryServiceTest {
@@ -34,9 +34,10 @@ class DiaryServiceTest {
     @Autowired
     private DiaryRepository diaryRepository;
     @Autowired
-    private DiaryService diaryService;
-    @Autowired
     private MemberRepository memberRepository;
+    @Autowired
+    @Qualifier("diaryServiceTestImpl")
+    private DiaryService diaryService;
 
     Member member = null;
     Member secondMember = null;
