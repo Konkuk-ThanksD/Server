@@ -22,16 +22,19 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class DiaryServiceTestImpl implements DiaryService{
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
+
+    public DiaryServiceTestImpl(DiaryRepository diaryRepository, MemberRepository memberRepository) {
+        this.diaryRepository = diaryRepository;
+        this.memberRepository = memberRepository;
+    }
 
     @Transactional
     public DiaryIdResponse saveDiary(DiaryRequest diaryRequest, Long memberId) {
