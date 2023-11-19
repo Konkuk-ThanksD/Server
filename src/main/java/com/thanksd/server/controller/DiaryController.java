@@ -55,9 +55,6 @@ public class DiaryController {
     public Response<Object> updateDiary(@LoginUserId Long memberId, @PathVariable Long id,
                                         @RequestBody DiaryUpdateRequest diaryUpdateRequest) {
 
-        if(!(diaryUpdateRequest.getImage().isBlank())){
-            preSignedUrlService.deleteByPath(memberId,id);
-        }
         DiaryResponse response = diaryService.updateDiary(diaryUpdateRequest, memberId, id);
         return Response.ofSuccess("OK", response);
     }
@@ -66,7 +63,6 @@ public class DiaryController {
     @DeleteMapping("/{id}")
     public Response<Object> deleteDiary(@LoginUserId Long memberId, @PathVariable Long id) {
 
-        preSignedUrlService.deleteByPath(memberId,id);
         DiaryIdResponse response = diaryService.deleteDiary(memberId, id);
         return Response.ofSuccess("OK", response);
     }
