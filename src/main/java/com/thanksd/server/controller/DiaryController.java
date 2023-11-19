@@ -2,20 +2,33 @@ package com.thanksd.server.controller;
 
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
-import com.thanksd.server.dto.response.*;
-
+import com.thanksd.server.dto.response.DiaryAllResponse;
+import com.thanksd.server.dto.response.DiaryDateResponse;
+import com.thanksd.server.dto.response.DiaryIdResponse;
+import com.thanksd.server.dto.response.DiaryInfoListResponse;
+import com.thanksd.server.dto.response.DiaryResponse;
+import com.thanksd.server.dto.response.DiaryWeekCountResponse;
+import com.thanksd.server.dto.response.PreSignedUrlResponse;
+import com.thanksd.server.dto.response.Response;
 import com.thanksd.server.security.auth.LoginUserId;
 import com.thanksd.server.service.DiaryService;
 import com.thanksd.server.service.PreSignedUrlService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 import java.time.LocalDate;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Diaries", description = "일기")
 @RestController
@@ -103,9 +116,9 @@ public class DiaryController {
     @GetMapping("/week")
     public Response<Object> findDiaryCountByWeek(
             @LoginUserId Long memberId,
-            @Qualifier Integer year,
-            @Qualifier Integer month,
-            @Qualifier Integer day){
+            @RequestParam final int year,
+            @RequestParam final int month,
+            @RequestParam final int day){
 
         DiaryWeekCountResponse response = diaryService.findDiaryCountByWeek(memberId,LocalDate.of(year,month,day));
         return Response.ofSuccess("OK",response);
