@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
@@ -100,9 +101,13 @@ public class DiaryController {
 
     @Operation(summary = "해당 주에 존재하는 일기 개수 조회")
     @GetMapping("/week")
-    public Response<Object> findDiaryCountByWeek(@LoginUserId Long memberId){
+    public Response<Object> findDiaryCountByWeek(
+            @LoginUserId Long memberId,
+            @Qualifier Integer year,
+            @Qualifier Integer month,
+            @Qualifier Integer day){
 
-        DiaryWeekCountResponse response = diaryService.findDiaryCountByWeek(memberId,LocalDate.now());
+        DiaryWeekCountResponse response = diaryService.findDiaryCountByWeek(memberId,LocalDate.of(year,month,day));
         return Response.ofSuccess("OK",response);
     }
 }
