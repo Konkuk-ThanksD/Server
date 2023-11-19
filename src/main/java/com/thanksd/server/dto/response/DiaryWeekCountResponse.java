@@ -12,12 +12,5 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class DiaryWeekCountResponse {
-//    int monday;
-//    int tuesday;
-//    int wednesday;
-//    int thursday;
-//    int friday;
-//    int saturday;
-//    int sunday;
     Map<String,Integer> weekCounts;
 }
