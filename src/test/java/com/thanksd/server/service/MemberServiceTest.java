@@ -1,8 +1,5 @@
 package com.thanksd.server.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.domain.Nation;
 import com.thanksd.server.domain.Platform;
@@ -11,10 +8,14 @@ import com.thanksd.server.dto.request.OAuthMemberSignUpRequest;
 import com.thanksd.server.exception.badrequest.DuplicateMemberException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.MemberRepository;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ServiceTest
 public class MemberServiceTest {
@@ -72,5 +73,17 @@ public class MemberServiceTest {
 
         assertThatThrownBy(() -> memberService.signUpByOAuthMember(request))
                 .isInstanceOf(NotFoundMemberException.class);
+    }
+
+    @Test
+    @DisplayName("회원이 정상적으로 탈퇴한다")
+    void delete() {
+        String email = "dlawotn3@naver.com";
+        Member savedMember = memberRepository.save(new Member(email, "a1b2c3"));
+
+        memberService.delete(savedMember.getId());
+
+        List<Member> actual = memberRepository.findAll();
+        assertThat(actual).hasSize(0);
     }
 }
