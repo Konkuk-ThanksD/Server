@@ -55,8 +55,8 @@ public class DiaryController {
     public Response<Object> updateDiary(@LoginUserId Long memberId, @PathVariable Long id,
                                         @RequestBody DiaryUpdateRequest diaryUpdateRequest) {
 
-        if(!(diaryUpdateRequest.getImage().isBlank())){
-            preSignedUrlService.deleteByPath(memberId,id);
+        if (!(diaryUpdateRequest.getImage().isBlank())) {
+            preSignedUrlService.deleteByPath(memberId, id);
         }
         DiaryResponse response = diaryService.updateDiary(diaryUpdateRequest, memberId, id);
         return Response.ofSuccess("OK", response);
@@ -66,16 +66,16 @@ public class DiaryController {
     @DeleteMapping("/{id}")
     public Response<Object> deleteDiary(@LoginUserId Long memberId, @PathVariable Long id) {
 
-        preSignedUrlService.deleteByPath(memberId,id);
+        preSignedUrlService.deleteByPath(memberId, id);
         DiaryIdResponse response = diaryService.deleteDiary(memberId, id);
         return Response.ofSuccess("OK", response);
     }
 
     @Operation(summary = "이미지 업로드를 위한 presigned url 요청")
     @PostMapping("/presigned")
-    public Response<Object> preSignedUrl(@LoginUserId Long memberId,@RequestParam("image") String imageName){
+    public Response<Object> preSignedUrl(@LoginUserId Long memberId, @RequestParam("image") String imageName) {
 
-        PreSignedUrlResponse response = preSignedUrlService.getPreSignedUrl(imageName,memberId);
+        PreSignedUrlResponse response = preSignedUrlService.getPreSignedUrl(imageName, memberId);
         return Response.ofSuccess("OK", response);
     }
 
@@ -96,5 +96,13 @@ public class DiaryController {
             @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         DiaryInfoListResponse response = diaryService.findDiaryByDate(memberId, date);
         return Response.ofSuccess("OK", response);
+    }
+
+    @Operation(summary = "해당 주에 존재하는 일기 개수 조회")
+    @GetMapping("/week")
+    public Response<Object> findDiaryCountByWeek(@LoginUserId Long memberId){
+
+        DiaryWeekCountResponse response = diaryService.findDiaryCountByWeek(memberId,LocalDate.now());
+        return Response.ofSuccess("OK",response);
     }
 }
