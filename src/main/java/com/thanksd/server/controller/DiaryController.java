@@ -116,11 +116,9 @@ public class DiaryController {
     @GetMapping("/week")
     public Response<Object> findDiaryCountByWeek(
             @LoginUserId Long memberId,
-            @RequestParam final int year,
-            @RequestParam final int month,
-            @RequestParam final int day){
+            @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today){
 
-        DiaryWeekCountResponse response = diaryService.findDiaryCountByWeek(memberId,LocalDate.of(year,month,day));
+        DiaryWeekCountResponse response = diaryService.findDiaryCountByWeek(memberId,today);
         return Response.ofSuccess("OK",response);
     }
 }
