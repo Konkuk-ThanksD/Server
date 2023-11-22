@@ -4,23 +4,31 @@ import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
-import com.thanksd.server.dto.response.*;
+import com.thanksd.server.dto.response.DiaryAllResponse;
+import com.thanksd.server.dto.response.DiaryDateResponse;
+import com.thanksd.server.dto.response.DiaryIdResponse;
+import com.thanksd.server.dto.response.DiaryInfoListResponse;
+import com.thanksd.server.dto.response.DiaryInfoResponse;
+import com.thanksd.server.dto.response.DiaryResponse;
+import com.thanksd.server.dto.response.DiaryWeekCountResponse;
 import com.thanksd.server.exception.badrequest.InvalidDateException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.sql.Timestamp;
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -157,5 +165,20 @@ public class DiaryService {
         return diaries.stream()
                 .map(diary -> new DiaryInfoResponse(diary.getId(), diary.getImage()))
                 .collect(Collectors.toList());
+    }
+
+    public DiaryWeekCountResponse findDiaryCountByWeek(Long memberId, LocalDate today) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(NotFoundMemberException::new);
+
+        LocalDate startOfWeek = today.with(DayOfWeek.MONDAY);
+        LocalDate endOfWeek = today.with(DayOfWeek.SUNDAY);
+
+        Map<String, Integer> diaryCounts = new HashMap<>();
+        for (LocalDate date = startOfWeek; !date.isAfter(endOfWeek); date = date.plusDays(1)) {
+            int diaryCount = diaryRepository.findDiariesByCreatedTime(member, convertToTimestamp(date)).size();
+            diaryCounts.put(date.getDayOfWeek().name(), diaryCount);
+        }
+        return new DiaryWeekCountResponse(diaryCounts);
     }
 }
