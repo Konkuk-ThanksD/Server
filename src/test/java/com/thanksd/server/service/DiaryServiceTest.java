@@ -57,7 +57,7 @@ class DiaryServiceTest {
     @DisplayName("일기를 저장한다.")
     public void saveDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", imageUrl);
+        DiaryRequest diaryRequest = new DiaryRequest(imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
@@ -68,8 +68,6 @@ class DiaryServiceTest {
         List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
 
         assertThat(diaries.size()).isEqualTo(1);
-        assertEquals(diaryRequest.getContent(), findDiary.getContent(), "저장된 일기 내용이 같아야 한다.");
-        assertEquals(diaryRequest.getFont(), findDiary.getFont(), "저장된 일기 폰트가 같아야 한다.");
         assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiary.getImage(),
                 "저장된 일기 이미지가 같아야 한다.");
     }
@@ -78,8 +76,8 @@ class DiaryServiceTest {
     @DisplayName("일기를 수정한다.")
     public void updateDiary() {
         //given
-        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans", imageUrl);
-        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("newContent", "sans", imageUrl);
+        DiaryRequest oldDiaryRequest = new DiaryRequest(imageUrl);
+        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest(imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(oldDiaryRequest, member.getId()).getId();
@@ -87,8 +85,6 @@ class DiaryServiceTest {
 
         //then
         DiaryResponse findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
-        assertEquals(newDiaryRequest.getContent(), findDiaryResponse.getContent(), "수정된 일기 내용이 같아야 한다.");
-        assertEquals(newDiaryRequest.getFont(), findDiaryResponse.getFont(), "수정된 일기 폰트가 같아야 한다.");
         assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiaryResponse.getImage(),
                 "수정된 일기 이미지가 같아야 한다.");
     }
@@ -97,7 +93,7 @@ class DiaryServiceTest {
     @DisplayName("일기를 삭제한다.")
     public void deleteDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", imageUrl);
+        DiaryRequest diaryRequest = new DiaryRequest(imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
@@ -115,8 +111,8 @@ class DiaryServiceTest {
     @DisplayName("일기 업데이트 시, 존재하지 않는 일기는 업데이트 될 수 없다.")
     public void notFoundDiaryWhenUpdate() {
         //given
-        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans", imageUrl);
-        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("newContent", "sans", imageUrl);
+        DiaryRequest oldDiaryRequest = new DiaryRequest(imageUrl);
+        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest(imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(oldDiaryRequest, member.getId()).getId();
@@ -130,8 +126,8 @@ class DiaryServiceTest {
     @DisplayName("업데이트 시, 공백값이 들어온 경우 기존 값을 유지한다.")
     public void notChangeValueWhenBlankRequest() {
         //given
-        DiaryRequest oldDiaryRequest = new DiaryRequest("oldContent", "sans", imageUrl);
-        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("", "", "");
+        DiaryRequest oldDiaryRequest = new DiaryRequest(imageUrl);
+        DiaryUpdateRequest newDiaryRequest = new DiaryUpdateRequest("");
 
         //when
         Long diaryId = diaryService.saveDiary(oldDiaryRequest, member.getId()).getId();
@@ -139,8 +135,6 @@ class DiaryServiceTest {
 
         //then
         DiaryResponse findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
-        assertEquals(oldDiaryRequest.getContent(), findDiaryResponse.getContent(), "기존 일기 내용이 같아야 한다.");
-        assertEquals(oldDiaryRequest.getFont(), findDiaryResponse.getFont(), "기존 일기 폰트가 같아야 한다.");
         assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiaryResponse.getImage(),
                 "기존 일기 이미지가 같아야 한다.");
     }
@@ -149,8 +143,8 @@ class DiaryServiceTest {
     @DisplayName("일기는 작성자만 접근가능하다.")
     public void accessDiary() {
         //given
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", imageUrl);
-        DiaryUpdateRequest diaryUpdateRequest = new DiaryUpdateRequest("newContent", "sans", imageUrl);
+        DiaryRequest diaryRequest = new DiaryRequest(imageUrl);
+        DiaryUpdateRequest diaryUpdateRequest = new DiaryUpdateRequest(imageUrl);
 
         //when
         Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
@@ -192,7 +186,7 @@ class DiaryServiceTest {
     @Test
     @DisplayName("해당 날짜가 포함된 주에 작성한 일기의 개수를 반환한다.")
     void findDiaryCountByWeek(){
-        DiaryRequest diaryRequest = new DiaryRequest("content", "sans", imageUrl);
+        DiaryRequest diaryRequest = new DiaryRequest(imageUrl);
         diaryService.saveDiary(diaryRequest, member.getId());
         LocalDate today = LocalDate.now();
         DayOfWeek dayOfWeek = today.getDayOfWeek();
