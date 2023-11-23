@@ -12,7 +12,5 @@ import lombok.ToString;
 @ToString
 public class DiaryResponse {
 
-    private String content;
-    private String font;
     private String image;
 }
