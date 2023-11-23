@@ -3,9 +3,20 @@
 ## 🛠️ Stack
 - `Language`: Java 11, JUnit 5
 - `Framework`: Spring Boot 2.7.17
-- `Database`: H2
+- `Database`: H2, Amazon RDS for MySQL
 - `ORM`: JPA (Spring Data JPA)
 - `API Docs`: SpringDoc Swagger 3
+
+<br>
+
+## 💻 Service Architecture
+<img width="482" alt="image" src="https://github.com/Konkuk-ThanksD/Server/assets/69844138/e084ce30-a862-465f-8e1d-0ea002e2a900">
+<br>
+<img width="482" alt="image" src="https://github.com/Konkuk-ThanksD/Server/assets/69844138/d386e04e-6dab-4a27-85c5-a97ac5ed39a8">
+
+<br>
+
+
 
 <br>
 
