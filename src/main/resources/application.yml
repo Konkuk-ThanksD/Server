@@ -30,9 +30,6 @@ spring:
             redirect-uri: ${GOOGLE_REDIRECT_URI}
             scope:
               - email
-  config:
-    activate:
-      on-profile:
 
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttestttttest
