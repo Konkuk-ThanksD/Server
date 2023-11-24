@@ -123,9 +123,7 @@ public class DiaryService {
         Timestamp start = Timestamp.valueOf(startDate);
         Timestamp end = Timestamp.valueOf(endDate);
 
-        List<LocalDate> dateList = getDiaryDates(member, start, end).stream()
-                .distinct()
-                .collect(Collectors.toList());
+        List<LocalDate> dateList = getDiaryDates(member, start, end);
 
         return new DiaryDateResponse(dateList);
     }
@@ -142,6 +140,7 @@ public class DiaryService {
         List<Diary> diaries = diaryRepository.findByMemberAndCreatedTimeBetween(member, start, end);
         return diaries.stream()
                 .map(diary -> diary.getCreatedTime().toLocalDateTime().toLocalDate())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
