@@ -30,13 +30,10 @@ spring:
             redirect-uri: ${GOOGLE_REDIRECT_URI}
             scope:
               - email
-  config:
-    activate:
-      on-profile:
 
 security.jwt.token:
   secret-key: testtesttesttesttesttesttesttesttestttttest
-  expire-length: 1800000
+  expire-length: 604800000
 
 springdoc:
   default-consumes-media-type: application/json

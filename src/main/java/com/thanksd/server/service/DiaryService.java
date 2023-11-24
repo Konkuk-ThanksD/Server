@@ -4,18 +4,16 @@ import com.thanksd.server.domain.Diary;
 import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
-import com.thanksd.server.dto.response.DiaryAllResponse;
-import com.thanksd.server.dto.response.DiaryDateResponse;
-import com.thanksd.server.dto.response.DiaryIdResponse;
-import com.thanksd.server.dto.response.DiaryInfoListResponse;
-import com.thanksd.server.dto.response.DiaryInfoResponse;
-import com.thanksd.server.dto.response.DiaryResponse;
-import com.thanksd.server.dto.response.DiaryWeekCountResponse;
+import com.thanksd.server.dto.response.*;
 import com.thanksd.server.exception.badrequest.InvalidDateException;
 import com.thanksd.server.exception.notfound.NotFoundDiaryException;
 import com.thanksd.server.exception.notfound.NotFoundMemberException;
 import com.thanksd.server.repository.DiaryRepository;
 import com.thanksd.server.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.sql.Timestamp;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
@@ -26,9 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -145,6 +140,7 @@ public class DiaryService {
         List<Diary> diaries = diaryRepository.findByMemberAndCreatedTimeBetween(member, start, end);
         return diaries.stream()
                 .map(diary -> diary.getCreatedTime().toLocalDateTime().toLocalDate())
+                .distinct()
                 .collect(Collectors.toList());
     }
 
