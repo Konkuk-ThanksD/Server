@@ -99,7 +99,7 @@ public class DiaryService {
         return diaryResponseList;
     }
 
-    public DiaryResponse findOne(Long memberId, Long diaryId) {
+    public Diary findOne(Long memberId, Long diaryId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -107,7 +107,7 @@ public class DiaryService {
                 .orElseThrow(NotFoundDiaryException::new);
         diary.validateDiaryOwner(member);
 
-        return new DiaryResponse(diary.getImage());
+        return diary;
     }
 
     public DiaryDateResponse findExistingDiaryDate(Long memberId, int year, int month) {
