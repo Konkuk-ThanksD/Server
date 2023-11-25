@@ -31,25 +31,13 @@ public class Diary extends BaseTime {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(name = "content")
-    private String content;
-
-    @Column(name = "font")
-    private String font;
-
     @Column(name = "image")
     private String image;
 
 
-    public Diary(Member member, String content, String font, String image) {
-        this.content = content;
-        this.font = font;
+    public Diary(Member member, String image) {
         setImage(image);
         setMember(member);
-    }
-
-    public Diary(Member member) {
-        this(member, null, null, null);
     }
 
     private void setMember(Member member) {
@@ -68,9 +56,7 @@ public class Diary extends BaseTime {
         this.image = path.substring(1,path.length());
     }
 
-    public void update(String content, String font, String image) {
-        this.content = content;
-        this.font = font;
+    public void update(String image) {
         if(this.image!= image)
             setImage(image);
     }

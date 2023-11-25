@@ -12,7 +12,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class DiaryUpdateRequest {
-    private String content;
-    private String font;
+
     private String image;
 }

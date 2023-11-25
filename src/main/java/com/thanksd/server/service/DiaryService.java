@@ -32,7 +32,6 @@ public class DiaryService {
 
     private final DiaryRepository diaryRepository;
     private final MemberRepository memberRepository;
-    private final PreSignedUrlService preSignedUrlService;
 
     @Transactional
     public DiaryIdResponse saveDiary(DiaryRequest diaryRequest, Long memberId) {
@@ -40,7 +39,7 @@ public class DiaryService {
                 .orElseThrow(NotFoundDiaryException::new);
 
         Diary diary = diaryRepository.save(
-                new Diary(member, diaryRequest.getContent(), diaryRequest.getFont(), diaryRequest.getImage())
+                new Diary(member, diaryRequest.getImage())
         );
 
         return new DiaryIdResponse(diary.getId());
@@ -56,13 +55,11 @@ public class DiaryService {
 
         findDiary.validateDiaryOwner(member);
         findDiary.update(
-                validateData(findDiary.getContent(), diaryUpdateRequest.getContent()),
-                validateData(findDiary.getFont(), diaryUpdateRequest.getFont()),
                 validateData(findDiary.getImage(), diaryUpdateRequest.getImage())
         );
         Diary diary = diaryRepository.save(findDiary);
 
-        return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
+        return new DiaryResponse(diary.getImage());
     }
 
     private String validateData(String oldData, String newData) {
@@ -97,7 +94,7 @@ public class DiaryService {
     private List<DiaryResponse> getDiaryResponseList(List<Diary> diaries) {
         List<DiaryResponse> diaryResponseList = new ArrayList<>();
         for (Diary diary : diaries) {
-            diaryResponseList.add(new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage()));
+            diaryResponseList.add(new DiaryResponse(diary.getImage()));
         }
         return diaryResponseList;
     }
@@ -110,7 +107,7 @@ public class DiaryService {
                 .orElseThrow(NotFoundDiaryException::new);
         diary.validateDiaryOwner(member);
 
-        return new DiaryResponse(diary.getContent(), diary.getFont(), diary.getImage());
+        return new DiaryResponse(diary.getImage());
     }
 
     public DiaryDateResponse findExistingDiaryDate(Long memberId, int year, int month) {
