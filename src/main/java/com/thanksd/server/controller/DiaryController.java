@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,10 +59,8 @@ public class DiaryController {
 
     @Operation(summary = "특정 일기 조회")
     @GetMapping("/{id}")
-    public Response<Object> findDiary(@LoginUserId Long memberId, @PathVariable Long id) {
-
-        DiaryResponse response = diaryService.findOne(memberId, id);
-        return Response.ofSuccess("OK", response);
+    public ResponseEntity<byte[]> findDiary(@LoginUserId Long memberId, @PathVariable Long id) {
+        return preSignedUrlService.getDiaryImage(memberId, id);
     }
 
     @Operation(summary = "특정 일기 수정")
