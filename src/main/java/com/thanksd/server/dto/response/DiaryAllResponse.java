@@ -12,5 +12,5 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class DiaryAllResponse {
-    private List<DiaryResponse> diaries;
+    private List<DiaryIdResponse> diaries;
 }

@@ -88,18 +88,18 @@ public class DiaryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
         List<Diary> diaries = member.getDiaries();
-        return new DiaryAllResponse(getDiaryResponseList(diaries));
+        return new DiaryAllResponse(getDiaryIdResponseList(diaries));
     }
 
-    private List<DiaryResponse> getDiaryResponseList(List<Diary> diaries) {
-        List<DiaryResponse> diaryResponseList = new ArrayList<>();
+    private List<DiaryIdResponse> getDiaryIdResponseList(List<Diary> diaries) {
+        List<DiaryIdResponse> diaryIdResponses = new ArrayList<>();
         for (Diary diary : diaries) {
-            diaryResponseList.add(new DiaryResponse(diary.getImage()));
+            diaryIdResponses.add(new DiaryIdResponse(diary.getId()));
         }
-        return diaryResponseList;
+        return diaryIdResponses;
     }
 
-    public DiaryResponse findOne(Long memberId, Long diaryId) {
+    public Diary findOne(Long memberId, Long diaryId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -107,7 +107,7 @@ public class DiaryService {
                 .orElseThrow(NotFoundDiaryException::new);
         diary.validateDiaryOwner(member);
 
-        return new DiaryResponse(diary.getImage());
+        return diary;
     }
 
     public DiaryDateResponse findExistingDiaryDate(Long memberId, int year, int month) {

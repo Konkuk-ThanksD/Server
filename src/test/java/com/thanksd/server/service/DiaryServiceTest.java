@@ -11,8 +11,8 @@ import com.thanksd.server.domain.Member;
 import com.thanksd.server.dto.request.DiaryRequest;
 import com.thanksd.server.dto.request.DiaryUpdateRequest;
 import com.thanksd.server.dto.response.DiaryDateResponse;
+import com.thanksd.server.dto.response.DiaryIdResponse;
 import com.thanksd.server.dto.response.DiaryInfoListResponse;
-import com.thanksd.server.dto.response.DiaryResponse;
 import com.thanksd.server.dto.response.DiaryWeekCountResponse;
 import com.thanksd.server.exception.badrequest.InvalidDateException;
 import com.thanksd.server.exception.badrequest.MemberMismatchException;
@@ -65,7 +65,7 @@ class DiaryServiceTest {
         //then
         Diary findDiary = diaryRepository.findById(diaryId)
                 .orElseThrow(NotFoundDiaryException::new);
-        List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
+        List<DiaryIdResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
 
         assertThat(diaries.size()).isEqualTo(1);
         assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiary.getImage(),
@@ -84,7 +84,7 @@ class DiaryServiceTest {
         diaryService.updateDiary(newDiaryRequest, member.getId(), diaryId);
 
         //then
-        DiaryResponse findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
+        Diary findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
         assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiaryResponse.getImage(),
                 "수정된 일기 이미지가 같아야 한다.");
     }
@@ -99,11 +99,11 @@ class DiaryServiceTest {
         Long diaryId = diaryService.saveDiary(diaryRequest, member.getId()).getId();
 
         //then
-        List<DiaryResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
+        List<DiaryIdResponse> diaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
         assertThat(diaries.size()).isEqualTo(1);
 
         diaryService.deleteDiary(member.getId(), diaryId);
-        List<DiaryResponse> deleteDiaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
+        List<DiaryIdResponse> deleteDiaries = diaryService.findMemberDiaries(member.getId()).getDiaries();
         assertThat(deleteDiaries.size()).isEqualTo(0);
     }
 
@@ -134,7 +134,7 @@ class DiaryServiceTest {
         diaryService.updateDiary(newDiaryRequest, member.getId(), diaryId);
 
         //then
-        DiaryResponse findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
+        Diary findDiaryResponse = diaryService.findOne(member.getId(), diaryId);
         assertEquals("images/1/cc4342b5-126f-4c73-a0b7-f70ad0a58ea6_test.jpg", findDiaryResponse.getImage(),
                 "기존 일기 이미지가 같아야 한다.");
     }
