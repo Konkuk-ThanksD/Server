@@ -85,7 +85,7 @@ public class DiaryController {
     }
 
     @Operation(summary = "이미지 업로드를 위한 presigned url 요청")
-    @PostMapping("/presigned")
+    @GetMapping("/presigned")
     public Response<Object> preSignedUrl(@LoginUserId Long memberId, @RequestParam("image") String imageName) {
 
         PreSignedUrlResponse response = preSignedUrlService.getPreSignedUrl(imageName, memberId);
